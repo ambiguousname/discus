@@ -4,6 +4,7 @@ import {readdir, readFile} from 'fs/promises';
 import {extname, resolve} from 'path';
 import {createHtmlPlugin} from 'vite-plugin-html';
 import {viteSingleFile} from 'vite-plugin-singlefile';
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 
 // Modified from https://github.com/klembot/chapbook
@@ -30,6 +31,16 @@ export default defineConfig(async () => ({
 		outDir: "./dist"
 	},
 	plugins: [
+		// Get the HTML file as a JSON, since that's what our custom template is for:
+		viteStaticCopy({
+			targets: [
+				{
+					src: "../build/Discus.html",
+					dest: "../..",
+					rename: "Discus.json",
+				}
+			]
+		}),
 		createHtmlPlugin({
 			entry: "./src/ts/game.mts",
 			inject: {

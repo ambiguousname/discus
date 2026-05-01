@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "rootDir": "..",
     "noImplicitAny": false,
     "module": "es2020",
     "moduleResolution": "bundler",
