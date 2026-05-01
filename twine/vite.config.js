@@ -55,6 +55,20 @@ export default defineConfig(async () => ({
 					rename: {
 						stripBase: 1
 					}
+				},
+				{
+					src: "../build/Discus.audio.worklet.js",
+					dest: ".",
+					rename: {
+						stripBase: 1
+					}
+				},
+				{
+					src: "../build/Discus.audio.position.worklet.js",
+					dest: ".",
+					rename: {
+						stripBase: 1
+					}
 				}
 			]
 		}),
