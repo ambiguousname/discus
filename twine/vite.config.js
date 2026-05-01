@@ -36,8 +36,25 @@ export default defineConfig(async () => ({
 			targets: [
 				{
 					src: "../build/Discus.html",
-					dest: "../..",
-					rename: "Discus.json",
+					dest: ".",
+					rename: {
+						stripBase: 1,
+						name: "Discus.json"
+					},
+				},
+				{
+					src: "../build/Discus.wasm",
+					dest: ".",
+					rename: {
+						stripBase: 1
+					}
+				},
+				{
+					src: "../build/Discus.pck",
+					dest: ".",
+					rename: {
+						stripBase: 1
+					}
 				}
 			]
 		}),
