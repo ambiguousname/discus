@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bnvvju3owac0l"]
+
+[sub_resource type="Environment" id="Environment_1svla"]
+background_mode = 1
+ambient_light_source = 2
+
+[node name="Start" type="Node3D" unique_id=154883177]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1342666631]
+environment = SubResource("Environment_1svla")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=340722460]
+transform = Transform3D(1, 0, 0, 0, -0.7242922, 0.6894932, 0, -0.6894932, -0.7242922, 0, 0, 0)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="." unique_id=1021697339]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -21.819876)
+radius = 7.714605
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1854430552]

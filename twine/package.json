@@ -1,0 +1,21 @@
+{
+  "name": "discus-twine",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "vite build",
+    "start": "vite"
+  },
+  "private": true,
+  "type": "module",
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "chapbook": "https://github.com/klembot/chapbook/tree/6192d1ce1b2304de6f3fde590fa400c0664b5ea0",
+    "eslint": "^10.2.1",
+    "extwee": "^2.3.15",
+    "vite": "^8.0.10",
+    "vite-plugin-checker": "^0.13.0",
+    "vite-plugin-html": "^3.2.2",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
