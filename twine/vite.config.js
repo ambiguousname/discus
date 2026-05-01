@@ -31,24 +31,17 @@ export default defineConfig(async () => ({
 	},
 	plugins: [
 		createHtmlPlugin({
-			entry: "../ts/game.mts",
+			entry: "./src/ts/game.mts",
 			inject: {
 				data: {
 					storyData: await storyData()
-				}
+				},
 			},
-			template: "src/html/template.html",
 			minify: true
 		}),
 		viteSingleFile()
 	],
   	server: {
-    	open: true,
-		fs: {
-			allow: [
-				searchForWorkspaceRoot(process.cwd()),
-				"./ts/game.mts",
-			]
-		}
+    	open: true
   	}
 }));
