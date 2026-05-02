@@ -12,6 +12,10 @@ func _ready() -> void:
 	js_twodot = JavaScriptBridge.get_interface("Twodot");
 	js_twodot.registerGodot(cb);
 
+var player : Player;
+func register_player(p : Player):
+	self.player = p;
+
 func sendEvent(event_name : String, event_value : Variant):
 	js_twodot.sendTwineEvent(event_name, event_value);
 
@@ -20,4 +24,8 @@ func receiveEvent(args : Array):
 		printerr("Expected two arguments: [event name] [event value], got %s" % args);
 	var event_name : String = args[0];
 	var event_value : Variant = args[1];
-	print(event_name, event_value);
+	match event_name:
+		"cam_update":
+			var update_data = JSON.parse_string(event_value);
+			if ("lookAt" in update_data):
+				player.set_look_at(update_data["lookAt"])

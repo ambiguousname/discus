@@ -2,6 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://s8c2hlbj8j56" path="res://level.blend" id="1_ots34"]
 [ext_resource type="Shader" uid="uid://dmwswtj4b8uyr" path="res://shading/sky.gdshader" id="2_qn1rc"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="3_1n0d2"]
+[ext_resource type="Script" uid="uid://b0kl0lg35cg00" path="res://player.gd" id="3_4a3qj"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_oiuna"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_4a3qj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
 shader = ExtResource("2_qn1rc")
@@ -18,6 +22,9 @@ ambient_light_source = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ots34"]
 
+[sub_resource type="Resource" id="Resource_g38d0"]
+script = ExtResource("5_4a3qj")
+
 [node name="Start" type="Node3D" unique_id=154883177]
 
 [node name="level" parent="." unique_id=816158683 instance=ExtResource("1_ots34")]
@@ -30,9 +37,27 @@ transform = Transform3D(1, 0, 0, 0, -0.9789779, 0.20396635, 0, -0.20396635, -0.9
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1219222995]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.087585)
+script = ExtResource("3_4a3qj")
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1854430552]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+physics_interpolation_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, -28.087585)
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="Player/Camera3D" unique_id=932112595]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("3_1n0d2")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1580798866]
 shape = SubResource("CapsuleShape3D_ots34")
+
+[node name="FPS" type="Node3D" parent="Player" unique_id=1037524226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+script = ExtResource("4_oiuna")
+priority = 1
+look_at_mode = 2
+tween_resource = SubResource("Resource_g38d0")
+look_at_damping = true
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
