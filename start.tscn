@@ -1,20 +1,38 @@
 [gd_scene format=3 uid="uid://bnvvju3owac0l"]
 
 [ext_resource type="PackedScene" uid="uid://s8c2hlbj8j56" path="res://level.blend" id="1_ots34"]
+[ext_resource type="Shader" uid="uid://dmwswtj4b8uyr" path="res://shading/sky.gdshader" id="2_qn1rc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
+shader = ExtResource("2_qn1rc")
+shader_parameter/sky_color = Color(0, 0, 0, 1)
+shader_parameter/sun_angle_max = 0.972
+
+[sub_resource type="Sky" id="Sky_y5hus"]
+sky_material = SubResource("ShaderMaterial_1n0d2")
 
 [sub_resource type="Environment" id="Environment_1svla"]
-background_mode = 1
+background_mode = 2
+sky = SubResource("Sky_y5hus")
 ambient_light_source = 2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ots34"]
 
 [node name="Start" type="Node3D" unique_id=154883177]
 
-[node name="level" parent="." unique_id=528138136 instance=ExtResource("1_ots34")]
+[node name="level" parent="." unique_id=816158683 instance=ExtResource("1_ots34")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1342666631]
 environment = SubResource("Environment_1svla")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=340722460]
-transform = Transform3D(1, 0, 0, 0, -0.9980224, -0.06286025, 0, 0.06286025, -0.9980224, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -0.9789779, 0.20396635, 0, -0.20396635, -0.9789779, 0, 0, 0)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1854430552]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55051917, -7.1718764)
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1219222995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.087585)
+
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1854430552]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1580798866]
+shape = SubResource("CapsuleShape3D_ots34")

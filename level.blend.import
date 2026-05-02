@@ -37,7 +37,30 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"materials": {
+"Glass": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://shading/glass.tres",
+"use_external/path": "uid://byv2uw1cgsh3y"
+},
+"Grey": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://shading/grey.tres",
+"use_external/path": "uid://bsjp5smri7j1c"
+},
+"White": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://shading/white.tres",
+"use_external/path": "uid://bcayudupxvwp3"
+}
+},
+"nodes": {
+"PATH:Reference": {
+"import/skip_import": true
+}
+}
+}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

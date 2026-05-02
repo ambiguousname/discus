@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bsjp5smri7j1c"]
+
+[ext_resource type="Shader" uid="uid://ygrrrrc4wljl" path="res://shading/simple_shadows.gdshader" id="1_lg4dv"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_lg4dv")
+shader_parameter/mat_color = Color(0.4454878, 0.4454878, 0.4454878, 1)
+shader_parameter/tex_tint = Color(1, 1, 1, 1)
