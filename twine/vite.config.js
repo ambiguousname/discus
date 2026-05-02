@@ -28,10 +28,7 @@ async function storyData() {
 export default defineConfig(async () => ({
 	build: {
 		emptyOutDir: true,
-		outDir: "./dist",
-		watch: {
-			include: ["./src/twee/**", "./src/**"]
-		}
+		outDir: "./dist"
 	},
 	plugins: [
 		// Get the HTML file as a JSON, since that's what our custom template is for:
