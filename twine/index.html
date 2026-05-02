@@ -5,9 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="game.css"/>
   </head>
   <body>
     <state-css-variables>
+      <canvas id="canvas" style="position: fixed; z-index: -1;" tabindex="-1"></canvas>
       <state-dark-theme-css-overrides>
         <div id="backdrop">
           <page-skip>
@@ -29,5 +31,4 @@
     <noscript>This requires JavaScript.</noscript>
   </body>
   <%- storyData %>
-  <canvas id="canvas"></canvas>
 </html>
