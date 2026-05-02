@@ -2,7 +2,14 @@ import "chapbook/src/runtime";
 import "../../../build/Discus";
 import { TwodotBridge } from "./bridge.mjs";
 
-window["Twodot"] = new TwodotBridge();
+let canvas = document.getElementById("canvas");
+
+if (canvas instanceof HTMLCanvasElement) {
+	let aspectRatio = 1152/648;
+	canvas.width = window.innerHeight * aspectRatio;
+	canvas.height = window.innerHeight;
+	window["Twodot"] = new TwodotBridge(canvas);
+}
 let twodot : TwodotBridge = window["Twodot"];
 
 async function init() {
@@ -54,17 +61,20 @@ async function init() {
 		}
 	} 
 
-	let canvas = document.getElementById("canvas");
-	if (canvas instanceof HTMLCanvasElement) {
-		canvas.width = 1938;
-		canvas.height = 1090;
-	}
 	// Do not resize the canvas, we handle that:
 	modifiedConfig["canvasResizePolicy"] = 0;
 	modifiedConfig["canvas"] = canvas;
+	modifiedConfig["focusCanvas"] = false;
+	modifiedConfig["onProgress"] = twodot.godotProgress.bind(twodot);
 
 	let engine = new Engine(modifiedConfig);
-	engine.startGame();
+	engine.startGame().then(() => {
+		// Disable tabbing:
+		if (canvas instanceof HTMLElement) {
+			canvas.tabIndex = -1;
+		}
+		twodot.finishProgress();
+	});
 }
 
 init();
