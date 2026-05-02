@@ -1,6 +1,9 @@
 import "chapbook/src/runtime";
 import "../../../build/Discus";
-// Will be created on build:
+import { TwodotBridge } from "./bridge.mjs";
+
+window["Twodot"] = new TwodotBridge();
+let twodot : TwodotBridge = window["Twodot"];
 
 async function init() {
 	let res = await fetch("Discus.json");
@@ -51,8 +54,21 @@ async function init() {
 		}
 	} 
 
+	let canvas = document.getElementById("canvas");
+	if (canvas instanceof HTMLCanvasElement) {
+		canvas.width = 1938;
+		canvas.height = 1090;
+	}
+	// Do not resize the canvas, we handle that:
+	modifiedConfig["canvasResizePolicy"] = 0;
+	modifiedConfig["canvas"] = canvas;
+
 	let engine = new Engine(modifiedConfig);
 	engine.startGame();
+
+	setTimeout(() => {
+		twodot.sendEvent("Some event", null);
+	}, 5000);
 }
 
 init();
