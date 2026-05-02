@@ -15,6 +15,10 @@
 	transform: translate(-50%, -50%);
 }
 
+article {
+	mix-blend-mode: difference;
+}
+
 #godot-load-progress {
 	position: relative;
 	transition-duration: 1s;
@@ -25,6 +29,11 @@
 	opacity: 0%;
 	transition-duration: 1s;
 	transition-property: opacity;
+}
+
+#page {
+	transition-duration: 1s;
+	transition-property: background-color;
 }
 
 body {
