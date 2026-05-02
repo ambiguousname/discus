@@ -6,7 +6,6 @@ import {createHtmlPlugin} from 'vite-plugin-html';
 import {viteSingleFile} from 'vite-plugin-singlefile';
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-
 // Modified from https://github.com/klembot/chapbook
 async function storyData() {
 	let source = '';
@@ -76,10 +75,20 @@ export default defineConfig(async () => ({
 			entry: "./src/ts/game.mts",
 			inject: {
 				data: {
-					storyData: await storyData()
+					storyData: await storyData(),
 				},
 			},
-			minify: true
+			minify: {
+				// Do not collapse whitespace, messes with Twine's story data:
+				collapseWhitespace: false,
+				keepClosingSlash: true,
+				removeComments: true,
+				removeRedundantAttributes: true,
+				removeScriptTypeAttributes: true,
+				removeStyleLinkTypeAttributes: true,
+				useShortDoctype: true,
+				minifyCSS: true
+			}
 		}),
 		viteSingleFile(),
 		{
