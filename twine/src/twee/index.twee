@@ -6,8 +6,6 @@ config.style.dark.backdrop: "hsla(0, 0%, 0%, 0.00)"
 --
 # Discus
 
-[progress]
-
 [[Play]]
 
 [cont]
@@ -21,7 +19,7 @@ config.style.dark.page.background-color: "hsla(0, 0%, 0%, 0.00)"
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
 [cont]
-The man speaking to you is nothing but tone. [[Test]]
+The man speaking to you is nothing but tone. {glink: "Test", label: "Asl"}
 
 :: Test
 Test!

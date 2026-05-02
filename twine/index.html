@@ -16,7 +16,10 @@
             <page-transition>
               <div id="page" aria-live="polite">
                 <header hidden></header>
-                <article></article>
+                <article id="content"></article>
+                <article id="godot-load-progress">
+                  <p>Loading <span id="godot-progress-percent">0%</span></p>
+                </article>
                 <warning-list></warning-list>
                 <footer hidden></footer>
                 <error-handler></error-handler>

@@ -1,6 +1,7 @@
 import "chapbook/src/runtime";
 import "../../../build/Discus";
 import { TwodotBridge } from "./bridge.mjs";
+import "./gameCamera.mjs";
 
 let canvas = document.getElementById("canvas");
 
@@ -59,13 +60,25 @@ async function init() {
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			alert(missingMsg + missing.join('\n'));
 		}
-	} 
+	}
+
+	let page = document.getElementById("content");
+	let progress = document.getElementById("godot-progress-percent");
+	let progressDiv = document.getElementById("godot-load-progress");
 
 	// Do not resize the canvas, we handle that:
 	modifiedConfig["canvasResizePolicy"] = 0;
 	modifiedConfig["canvas"] = canvas;
 	modifiedConfig["focusCanvas"] = false;
-	modifiedConfig["onProgress"] = twodot.godotProgress.bind(twodot);
+	modifiedConfig["onProgress"] = (current : number, total : number) => {
+		if (progress instanceof HTMLSpanElement) {
+			let p = current/total;
+			if (p === 1) {
+				p = 0.9999;
+			}
+			progress.innerText = `${Math.floor(p * 10000)/100}%`;
+		}
+	}
 
 	let engine = new Engine(modifiedConfig);
 	engine.startGame().then(() => {
@@ -73,7 +86,22 @@ async function init() {
 		if (canvas instanceof HTMLElement) {
 			canvas.tabIndex = -1;
 		}
-		twodot.finishProgress();
+		// Wait for Godot to finish loading fully, then do the transitions:
+		setTimeout(() => {
+			if (progress instanceof HTMLSpanElement) {
+				progress.innerText = "100%";
+			}
+			if (progressDiv instanceof HTMLElement) {
+				progressDiv.style.opacity = "0%";
+				progressDiv.ontransitionend = () => {
+					progressDiv.style.display = "none";
+				};
+				progressDiv.style.zIndex = "-1";
+			}
+			if (page instanceof HTMLElement) {
+				page.style.opacity = "100%";
+			}
+		}, 100);
 	});
 }
 

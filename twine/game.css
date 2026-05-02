@@ -15,6 +15,18 @@
 	transform: translate(-50%, -50%);
 }
 
+#godot-load-progress {
+	position: relative;
+	transition-duration: 1s;
+	transition-property: opacity;
+}
+
+#content {
+	opacity: 0%;
+	transition-duration: 1s;
+	transition-property: opacity;
+}
+
 body {
 	background-color: #000;
 }
