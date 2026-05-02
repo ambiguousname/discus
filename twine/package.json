@@ -11,8 +11,6 @@
   "description": "",
   "devDependencies": {
     "chapbook": "https://github.com/klembot/chapbook/tree/6192d1ce1b2304de6f3fde590fa400c0664b5ea0",
-    "discus-godot": "../build/Discus.js",
-    "eslint": "^10.2.1",
     "extwee": "^2.3.15",
     "vite": "^8.0.10",
     "vite-plugin-checker": "^0.13.0",
