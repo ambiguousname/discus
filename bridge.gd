@@ -1,12 +1,19 @@
 extends Node
 
 var cb : JavaScriptObject;
+var js_twodot : JavaScriptObject;
 
 func _ready() -> void:
+	if OS.get_name() != "Web":
+		self.queue_free();
+		return; 
 	print("Godot creating JS bridge...");
 	cb = JavaScriptBridge.create_callback(receiveEvent);
-	var js_twodot := JavaScriptBridge.get_interface("Twodot");
+	js_twodot = JavaScriptBridge.get_interface("Twodot");
 	js_twodot.registerGodot(cb);
+
+func sendEvent(event_name : String, event_value : Variant):
+	js_twodot.sendTwineEvent(event_name, event_value);
 
 func receiveEvent(args : Array):
 	if args.size() != 2:
