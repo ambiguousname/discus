@@ -28,7 +28,10 @@ async function storyData() {
 export default defineConfig(async () => ({
 	build: {
 		emptyOutDir: true,
-		outDir: "./dist"
+		outDir: "./dist",
+		watch: {
+			include: ["./src/twee/**", "./src/**"]
+		}
 	},
 	plugins: [
 		// Get the HTML file as a JSON, since that's what our custom template is for:
@@ -81,9 +84,23 @@ export default defineConfig(async () => ({
 			},
 			minify: true
 		}),
-		viteSingleFile()
+		viteSingleFile(),
+		{
+			name: 'tweewatch',
+			enforce: 'post',
+			// HMR
+			handleHotUpdate({ file, server }) {
+			if (file.endsWith('.twee')) {
+				console.log('Twee script changed, reloading...');
+				server.restart();
+			}
+			},
+		}
 	],
   	server: {
-    	open: true
+    	open: true,
+		watch: {
+			usePolling: true
+		}
   	}
 }));
