@@ -3,17 +3,6 @@
 type GodotVariant = string | number | boolean | null;
 type GodotEventCallback = (name : String, value : GodotVariant) => void;
 
-class Vector3 {
-	x: number = 0;
-	y: number = 0;
-	z: number = 0;
-	constructor(x : number, y : number, z : number) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-}
-
 export class TwodotBridge {
 	#godotEventCallback : GodotEventCallback = () => {};
 
@@ -24,25 +13,6 @@ export class TwodotBridge {
 
 	registerGodot(godotEventCallback : GodotEventCallback) {
 		this.#godotEventCallback = godotEventCallback;
-		// setTimeout(() => {
-
-		// 	this.sendGodotEvent("cam_update", JSON.stringify({
-		// 		"lookAt": [0, 100, -100]
-		// 	}));
-		// }, 5000);
-	}
-
-	setCameraLook(target : Vector3 | String) {
-		let lookAt : String | Array<number> = "/root";
-		if (target instanceof Vector3) {
-			lookAt = [target.x, target.y, target.z];
-		} else if (target instanceof String)  {
-			lookAt = target;
-		}
-
-		this.sendGodotEvent("cam_update", JSON.stringify({
-			"lookAt": lookAt
-		}))
 	}
 
 	sendGodotEvent(name : String, value : GodotVariant) {

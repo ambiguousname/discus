@@ -21,6 +21,9 @@ config.style.page.link.active.color: "raspberry-3 on raspberry-6"
 [[Play]]
 
 [cont]
+[[Settings]]
+
+[cont]
 
 [[Credits]]
 
@@ -28,10 +31,11 @@ config.style.page.link.active.color: "raspberry-3 on raspberry-6"
 config.style.backdrop: "hsla(0, 0%, 0%, 0.00)"
 config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
 --
+[after 2 seconds]
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
-[cont]
-The man speaking to you is nothing but tone. {glink: "Test", label: "Asl"}
+[after 4 seconds]
+The man speaking to you is nothing but tone. {glink: "Test", label: "Test", lookAt: "/root/Start/DirectionalLight3D"}
 
 :: Test
 Test!
