@@ -2,7 +2,19 @@
 Discus
 
 :: Start
-config.style.dark.backdrop: "hsla(0, 0%, 0%, 0.00)"
+config.style.page.theme.enableSwitching: false
+config.style.backdrop: "hsl(0, 0%, 10%)"
+config.style.page.footer.border: "thin-line"
+config.style.page.footer.borderColor: "white"
+config.style.page.footer.link.active.color: "raspberry-3 on raspberry-6"
+config.style.page.fork.divider.color: "gray-5"
+config.style.page.color: "white on gray-6"
+config.style.page.header.border: "thin-line"
+config.style.page.header.borderColor: "white"
+config.style.page.header.link.active.color: "raspberry-3 on raspberry-6"
+config.style.page.link.color: "white"
+config.style.page.link.lineColor: "raspberry-4"
+config.style.page.link.active.color: "raspberry-3 on raspberry-6"
 --
 # Discus
 
@@ -13,8 +25,8 @@ config.style.dark.backdrop: "hsla(0, 0%, 0%, 0.00)"
 [[Credits]]
 
 :: Play
-config.style.dark.backdrop: "hsla(0, 0%, 0%, 0.00)"
-config.style.dark.page.background-color: "hsla(0, 0%, 0%, 0.00)"
+config.style.backdrop: "hsla(0, 0%, 0%, 0.00)"
+config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
 --
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
