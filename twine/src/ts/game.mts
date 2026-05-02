@@ -65,10 +65,6 @@ async function init() {
 
 	let engine = new Engine(modifiedConfig);
 	engine.startGame();
-
-	setTimeout(() => {
-		twodot.sendEvent("Some event", null);
-	}, 5000);
 }
 
 init();
