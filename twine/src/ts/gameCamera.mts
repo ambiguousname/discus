@@ -48,7 +48,7 @@ class Vector3 {
 }
 
 type Focusable = Vector3 | String | null;
-let activeFocus : Focusable = new Vector3(0, 0, -100);
+let activeFocus : Focusable = null;
 
 function cameraFocus(target : Focusable, permanent : boolean) {
 	let lookAt : String | Array<number> | null = null;
@@ -72,5 +72,5 @@ function cameraFocus(target : Focusable, permanent : boolean) {
 window["cameraFocus"] = cameraFocus;
 
 window["resetCameraFocus"] = () => {
-	cameraFocus(activeFocus, false);
+	cameraFocus(null, true);
 }

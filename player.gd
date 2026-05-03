@@ -32,11 +32,15 @@ func set_look_at(look_target : Variant):
 			self.add_child(look_at_node);
 			look_at_node.global_position = Vector3(look_target[0], look_target[1], look_target[2]);
 			fps_cam.look_at_target = look_at_node;
+	elif look_target == null:
+		fps_cam.look_at_target = null;
 
 func _physics_process(delta: float) -> void:
 	var pos = agent.get_next_path_position();
 	var dir = (pos - self.global_position).normalized();
 	self.global_rotation.y = lerpf(self.global_rotation.y, -Vector3.FORWARD.angle_to(dir), delta);
+	if fps_cam.look_at_target == null:
+		fps_cam.global_rotation = fps_cam.global_rotation.lerp(Vector3.ZERO, delta);
 	
 	if !self.is_on_floor():
 		self.velocity.y -= 9.8;
