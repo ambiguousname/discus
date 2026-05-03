@@ -15,6 +15,7 @@ config.style.page.header.link.active.color: "raspberry-3 on raspberry-6"
 config.style.page.link.color: "white"
 config.style.page.link.lineColor: "raspberry-4"
 config.style.page.link.active.color: "raspberry-3 on raspberry-6"
+config.body.transition.duration: "0.1s"
 --
 # Discus
 
