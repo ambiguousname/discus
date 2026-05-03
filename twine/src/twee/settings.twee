@@ -1,4 +1,27 @@
 :: Settings
 
+{back link, label: 'Back'}
 
-{back link, label: "Back"}
+[JavaScript]
+// Don't want to have to inject JS into footer changing code, so this is just to check if the footer changes. If so, just hide the settings button:
+let observer = new MutationObserver(() => {
+	let selector = document.querySelector("footer div.center passage-link");
+	if (selector !== null) {
+		selector.style.display = "none";
+	}
+	observer.disconnect();
+});
+observer.observe(document.querySelector("footer"), {
+	subtree: true,
+	childList: true
+});
+
+[cont]
+TODO: These don't work.
+
+MSAA Antialiasing <select id="antialiasing">
+<option value="none">None</option>
+<option value="2x" selected>2x</option>
+<option value="4x">4x</option>
+<option value="8x">8x</option>
+</select>
