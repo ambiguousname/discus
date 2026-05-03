@@ -40,7 +40,6 @@ func receiveEvent(args : Array):
 			var props = update_data.get("props");
 			if props != null:
 				for p in props:
-					print(p, entity, entity.get(p), json_to_variant(props[p]));
 					entity.set(p, json_to_variant(props[p]));
 			
 			var funcs = update_data.get("funcs");
@@ -59,7 +58,6 @@ func jsons_to_variant(json_variants : Array[Variant]) -> Array[Variant]:
 
 ## Attempt to do some smart conversions to types.
 func json_to_variant(json_variant : Variant) -> Variant:
-	print(json_variant);
 	if json_variant is String:
 		if has_node(json_variant):
 			return get_node(json_variant);

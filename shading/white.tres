@@ -5,5 +5,5 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_dn4k6")
-shader_parameter/mat_color = Color(1, 1, 1, 1)
+shader_parameter/mat_color = Color(0.37162217, 0.3716222, 0.37162215, 1)
 shader_parameter/tex_tint = Color(1, 1, 1, 1)

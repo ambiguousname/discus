@@ -75,7 +75,7 @@ look_at_damping = true
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="Agamemnon" type="Sprite3D" parent="." unique_id=847927874]
-transform = Transform3D(0.31356412, 0, -0.24834968, 0, 0.4, 0, 0.24834968, 0, 0.31356412, 3.578123, 1.2750065, -27.89526)
+transform = Transform3D(-0.39733306, 0, -0.046113584, 0, 0.4, 0, 0.046113584, 0, -0.39733306, 0.4158198, 1.2750063, -23.20139)
 texture = ExtResource("7_g38d0")
 
 [node name="ClipPlane" type="Area3D" parent="." unique_id=1355222674]
@@ -92,4 +92,8 @@ shape = SubResource("WorldBoundaryShape3D_p0nl4")
 
 [node name="DeckCenter" type="Marker3D" parent="POIs" unique_id=1520212135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40316695, 0.14216435, -25.975111)
+script = ExtResource("10_p0nl4")
+
+[node name="DeckRight" type="Marker3D" parent="POIs" unique_id=511894600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.890388, 0.14216435, -14.582614)
 script = ExtResource("10_p0nl4")

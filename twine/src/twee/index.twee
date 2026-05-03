@@ -37,7 +37,25 @@ config.footer.center: "[[Settings]]"
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
 [after 4 seconds]
-The man speaking to you is nothing but tone. {glink: "Test", label: "Test", lookAt: "/root/Start/Agamemnon", moveTo: "e:DeckCenter"}
+You stifle a groan as you {glink: "Behind You", label: "about to face the man you know is behind you", lookAt: "/root/Start/Agamemnon", moveTo: "e:DeckCenter", clickLook: true}.
 
-:: Test
-Test!
+:: Behind You
+"There is a sickness about you," Agamemnon continues, "a kind of stifling miasma. Certainly not compared to what the Discus was when it was blessed by the Gods. Thor himself smashed {glink: "Mjolnir", label: "that very table", lookAt: "e:DeckRight"} with Mjölinr itself."
+
+:: Mjolnir
+
+[["There's no table there."->Mean]]
+
+[["You make it sound so... exciting."->Mean]]
+
+:: Mean
+[JavaScript]
+Interactions.cameraFocus("/root/Start/Agamemnon", true);
+
+[cont]
+
+"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me."
+
+[cont]
+
+"I'm sure you can understand my disappointment with your tenure. It's a betrayal not too dissimilar in feeling to when Aegisthus stabbed me in the back."
