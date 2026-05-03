@@ -17,18 +17,21 @@ addInsert({
 		};
 
 		if ("lookAt" in options) {
-			let lookAt = options["lookAt"];
-			interaction.onover += `Interactions.cameraFocus('${lookAt}', false);`;
-			interaction.onclick = `Interactions.cameraFocus('${lookAt}', true);`;
-			interaction.onout += `Interactions.resetCameraFocus();`;
+			let lookAt = Interactions.insertStringToInteractionString(options["lookAt"]);
+			interaction.onclick = `Interactions.cameraFocus(${lookAt}, true);`;
+
+			if ((options["clickLook"] ?? false) === false) {
+				interaction.onover += `Interactions.cameraFocus(${lookAt}, false);`;
+				interaction.onout += `Interactions.resetCameraFocus();`;
+			}
 		}
 		let label = options["label"];
 
 		if ("moveTo" in options) {
-			let moveTo = options["moveTo"];
-			interaction.onclick += `Interactions.moveTo('${moveTo}');`;
+			let moveTo = Interactions.insertStringToInteractionString(options["moveTo"]);
+			interaction.onclick += `Interactions.moveTo(${moveTo});`;
 		}
-		
+
 		return htmlify('passage-link', {
 			class: 'link',
 			onfocus: interaction.onover,
@@ -65,6 +68,14 @@ class Interactions {
 			return i;
 		} else {
 			return null;
+		}
+	}
+
+	static insertStringToInteractionString(i : any) : string {
+		if (typeof i == 'string') {
+			return `'${i}'`;
+		} else {
+			return i;
 		}
 	}
 
