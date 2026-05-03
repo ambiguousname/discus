@@ -4,9 +4,11 @@
 [ext_resource type="Shader" uid="uid://dmwswtj4b8uyr" path="res://shading/sky.gdshader" id="2_qn1rc"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="3_1n0d2"]
 [ext_resource type="Script" uid="uid://b0kl0lg35cg00" path="res://player.gd" id="3_4a3qj"]
+[ext_resource type="NavigationMesh" uid="uid://7amljq1dgkpe" path="res://navigation_mesh.tres" id="3_pob1m"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_oiuna"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_4a3qj"]
 [ext_resource type="Texture2D" uid="uid://ov6kh1oivles" path="res://assets/images/Agamemnon.svg" id="7_g38d0"]
+[ext_resource type="Script" uid="uid://4onexhlhw6fa" path="res://clip_plane.gd" id="9_gophc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
 shader = ExtResource("2_qn1rc")
@@ -26,9 +28,14 @@ ambient_light_source = 2
 [sub_resource type="Resource" id="Resource_g38d0"]
 script = ExtResource("5_4a3qj")
 
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_p0nl4"]
+
 [node name="Start" type="Node3D" unique_id=154883177]
 
-[node name="level" parent="." unique_id=816158683 instance=ExtResource("1_ots34")]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=2086848409]
+navigation_mesh = ExtResource("3_pob1m")
+
+[node name="level" parent="NavigationRegion3D" unique_id=1967717342 instance=ExtResource("1_ots34")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1342666631]
 environment = SubResource("Environment_1svla")
@@ -37,12 +44,15 @@ environment = SubResource("Environment_1svla")
 transform = Transform3D(1, 0, 0, 0, -0.9789779, 0.20396635, 0, -0.20396635, -0.9789779, 0, 0, 0)
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1219222995]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -28.087585)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -27.845715)
 script = ExtResource("3_4a3qj")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Player" unique_id=1150241594]
+avoidance_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1854430552]
 physics_interpolation_mode = 1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, -28.087585)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, -27.845715)
 top_level = true
 
 [node name="PhantomCameraHost" type="Node" parent="Player/Camera3D" unique_id=932112595]
@@ -66,3 +76,13 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 [node name="Agamemnon" type="Sprite3D" parent="." unique_id=847927874]
 transform = Transform3D(0.31356412, 0, -0.24834968, 0, 0.4, 0, 0.24834968, 0, 0.31356412, 3.578123, 1.2750065, -27.89526)
 texture = ExtResource("7_g38d0")
+
+[node name="ClipPlane" type="Area3D" parent="." unique_id=1355222674]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.343565, 0)
+script = ExtResource("9_gophc")
+
+[node name="ClipSafety" type="Node3D" parent="ClipPlane" unique_id=1277144992]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.8088255, -22.02039)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ClipPlane" unique_id=1466456951]
+shape = SubResource("WorldBoundaryShape3D_p0nl4")
