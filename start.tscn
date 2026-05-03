@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_4a3qj"]
 [ext_resource type="Texture2D" uid="uid://ov6kh1oivles" path="res://assets/images/Agamemnon.svg" id="7_g38d0"]
 [ext_resource type="Script" uid="uid://4onexhlhw6fa" path="res://clip_plane.gd" id="9_gophc"]
+[ext_resource type="Script" uid="uid://xew2epvjbgy6" path="res://poi.gd" id="10_p0nl4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
 shader = ExtResource("2_qn1rc")
@@ -91,3 +92,4 @@ shape = SubResource("WorldBoundaryShape3D_p0nl4")
 
 [node name="DeckCenter" type="Marker3D" parent="POIs" unique_id=1520212135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40316695, 0.14216435, -25.975111)
+script = ExtResource("10_p0nl4")

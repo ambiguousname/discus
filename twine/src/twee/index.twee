@@ -37,7 +37,7 @@ config.footer.center: "[[Settings]]"
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
 [after 4 seconds]
-The man speaking to you is nothing but tone. {glink: "Test", label: "Test", lookAt: "/root/Start/DirectionalLight3D"}
+The man speaking to you is nothing but tone. {glink: "Test", label: "Test", lookAt: "/root/Start/Agamemnon", moveTo: "e:DeckCenter"}
 
 :: Test
 Test!

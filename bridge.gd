@@ -40,9 +40,34 @@ func receiveEvent(args : Array):
 			var props = update_data.get("props");
 			if props != null:
 				for p in props:
-					entity.set(p, props[p]);
+					print(p, entity, entity.get(p), json_to_variant(props[p]));
+					entity.set(p, json_to_variant(props[p]));
 			
 			var funcs = update_data.get("funcs");
 			if funcs != null:
 				for f in funcs:
-					entity.callv(f, funcs[f]);
+					if funcs[f] is not Array:
+						printerr("Found invalid call to %s: %s must be in an array" % [f, funcs[f]]);
+						return;
+					entity.callv(f, jsons_to_variant(funcs[f]));
+
+func jsons_to_variant(json_variants : Array[Variant]) -> Array[Variant]:
+	var out = [];
+	for j in json_variants:
+		out.append(json_to_variant(j));
+	return out;
+
+## Attempt to do some smart conversions to types.
+func json_to_variant(json_variant : Variant) -> Variant:
+	print(json_variant);
+	if json_variant is String:
+		if has_node(json_variant):
+			return get_node(json_variant);
+		elif json_variant.begins_with("e:"):
+			return self.entities[json_variant.substr(2)];
+		else:
+			return json_variant;
+	elif json_variant is Array && json_variant.size() == 3 && json_variant[0] is float && json_variant[1] is float && json_variant[2] is float:
+			return Vector3(json_variant[0], json_variant[1], json_variant[2]);
+	else:
+		return json_variant;
