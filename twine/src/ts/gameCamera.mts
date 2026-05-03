@@ -62,12 +62,15 @@ function cameraFocus(target : Focusable, permanent : boolean) {
 		activeFocus = target;
 	}
 
-	twodot.sendGodotEvent("cam_update", JSON.stringify({
-		"lookAt": lookAt
+	twodot.sendGodotEvent("entity_update", JSON.stringify({
+		"entityName": "Player",
+		"funcs": {
+			"set_look_at": [lookAt]
+		}
 	}));
 }
 window["cameraFocus"] = cameraFocus;
 
 window["resetCameraFocus"] = () => {
-	cameraFocus(activeFocus);
+	cameraFocus(activeFocus, false);
 }

@@ -12,9 +12,9 @@ func _ready() -> void:
 	js_twodot = JavaScriptBridge.get_interface("Twodot");
 	js_twodot.registerGodot(cb);
 
-var player : Player;
-func register_player(p : Player):
-	self.player = p;
+var entities : Dictionary[String, Node];
+func register_entity(e : Node):
+	self.entities[e.name] = e;
 
 func sendEvent(event_name : String, event_value : Variant):
 	js_twodot.sendTwineEvent(event_name, event_value);
@@ -25,7 +25,24 @@ func receiveEvent(args : Array):
 	var event_name : String = args[0];
 	var event_value : Variant = args[1];
 	match event_name:
-		"cam_update":
-			var update_data = JSON.parse_string(event_value);
-			if ("lookAt" in update_data):
-				player.set_look_at(update_data["lookAt"])
+		"entity_update":
+			var update_data : Dictionary = JSON.parse_string(event_value);
+			var entity_name : String = update_data.get("entityName");
+			if entity_name == null:
+				printerr("No entityName found in update_data: %s" % update_data);
+				return;
+			
+			var entity : Node = entities.get(entity_name);
+			if entity == null:
+				printerr("Entity %s not found." % entity_name);
+				return;
+			
+			var props = update_data.get("props");
+			if props != null:
+				for p in props:
+					entity.set(p, props[p]);
+			
+			var funcs = update_data.get("funcs");
+			if funcs != null:
+				for f in funcs:
+					entity.callv(f, funcs[f]);

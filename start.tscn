@@ -86,3 +86,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.8088255, -22.02039)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ClipPlane" unique_id=1466456951]
 shape = SubResource("WorldBoundaryShape3D_p0nl4")
+
+[node name="POIs" type="Node3D" parent="." unique_id=467049094]
+
+[node name="DeckCenter" type="Marker3D" parent="POIs" unique_id=1520212135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40316695, 0.14216435, -25.975111)

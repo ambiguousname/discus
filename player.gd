@@ -5,20 +5,20 @@ class_name Player extends CharacterBody3D
 
 @onready var agent : NavigationAgent3D = $NavigationAgent3D;
 
+@export var look_at: Variant:
+	set(v):
+		self.set_look_at(v);
+
 @export var move_target : Vector3:
 	set(v):
 		move_target = v;
 		agent.target_position = v;
 
 func _ready() -> void:
-	Bridge.register_player(self);
+	Bridge.register_entity(self);
 	agent.velocity_computed.connect(func(safe_velocity : Vector3):
 		self.velocity = safe_velocity;
 	);
-	
-	if move_target == null:
-		move_target = global_position;
-	move_target = $/root/Start/Agamemnon.global_position;
 
 var look_at_node : Node3D;
 func set_look_at(look_target : Variant):
