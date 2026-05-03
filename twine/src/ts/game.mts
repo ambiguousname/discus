@@ -1,6 +1,7 @@
 import "chapbook/src/runtime";
 import "../../../build/Discus";
 import { TwodotBridge } from "./bridge.mjs";
+import "./draw.mjs";
 import "./gameCamera.mjs";
 
 let canvas = document.getElementById("canvas");

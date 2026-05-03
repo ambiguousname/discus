@@ -15,8 +15,12 @@
 	transform: translate(-50%, -50%);
 }
 
-article {
+article > div > * {
 	mix-blend-mode: difference;
+}
+
+p:has(entity-draw) {
+	mix-blend-mode: normal;
 }
 
 #godot-load-progress {
