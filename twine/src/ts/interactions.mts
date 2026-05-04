@@ -57,15 +57,21 @@ class Vector3 {
 	}
 }
 
-type InteractionType = Vector3 | string | null;
+type InteractionType = Vector3 | Array<InteractionType> | string | number | null;
 
 class Interactions {
 	#activeFocus : InteractionType = null;
 	#interactionStringToVariant(i : InteractionType) : JSONVariant | null {
-		if (i instanceof Vector3) {
-			return [i.x, i.y, i.z];
-		} else if (typeof i == "string") {
+		if (typeof i == "string") {
 			return i;
+		} else if (typeof i == "number") {
+			return i;
+		} else if (i instanceof Vector3) {
+			return [i.x, i.y, i.z];
+		} else if (i instanceof Array) {
+			return i.map((inner) => {
+				return this.#interactionStringToVariant(inner);
+			}, this);
 		} else {
 			return null;
 		}
@@ -74,8 +80,10 @@ class Interactions {
 	static insertStringToInteractionString(i : any) : string {
 		if (typeof i == 'string') {
 			return `'${i}'`;
-		} else {
-			return i;
+		} else if (i instanceof Array) {
+			return `[${i}]`;
+		} {
+			return `${i}`;
 		}
 	}
 
@@ -85,6 +93,8 @@ class Interactions {
 		if (permanent) {
 			this.#activeFocus = target;
 		}
+
+		console.log(lookAt);
 
 		twodot.sendGodotEvent("entity_update", JSON.stringify({
 			"entityName": "Player",
