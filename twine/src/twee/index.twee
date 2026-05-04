@@ -45,10 +45,10 @@ config.footer.center: "[[Settings]]"
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
 [after 4 seconds]
-You stifle a groan as you {glink: "Behind You", label: "about to face the man you know is behind you", lookAt: "/root/Start/Agamemnon", moveTo: "e:DeckCenter", clickLook: true}.
+You stifle a groan as you {glink: "Behind You", label: "make an about face for the man you know is behind you", lookAt: "/root/Start/Agamemnon", moveTo: "e:DeckCenter", clickLook: true}.
 
 :: Behind You
-"There is a sickness about you," Agamemnon continues, "a kind of stifling miasma. Certainly not compared to what the Discus was when it was blessed by the Gods. For your edification, Thor himself smashed {glink: "Mjolnir", label: "that very table", lookAt: "e:DeckRight"} with his bare fists. And his hammer."
+"There is a sickness about you," Agamemnon continues, "a kind of stifling miasma. Certainly not compared to what the Discus was when it was blessed by the Gods. For your edification, Thor himself smashed {glink: "Mjolnir", label: "that very table", lookAt: "e:DeckLeft"} with his bare fists. And his hammer."
 
 :: Mjolnir
 
@@ -62,13 +62,15 @@ Interactions.cameraFocus("/root/Start/Agamemnon", true);
 
 [cont]
 
-"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I'm mostly am here to reminisce and despair over the sickness I am afflicted with. The spirit of Hera overtook me, and see where it has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [0, 0, 1000]}"
+"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. The spirit of Hera overtook me, and see where it has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-6, 0, -24]}"
 
 :: Unlock Door
 
-You move to unlock the door. Not even a second passes before you hear Agamemnon's {reveal link: 'anguished screams', passage: 'Anguished Screams'}.
+You move to unlock the door. Not even a second passes before you hear Agamemnon's [[anguished screams->Anguished Screams]].
 
 :: Anguished Screams
+
+[cont]
 
 "AUGH! OW! AHHH! OUCH! OUCH! OUCH! OUCH! OUCH!" A random smattering of objects can be heard clanging behind you.
 
@@ -78,19 +80,24 @@ All is quite for a half second, until you hear the screams again. "OUCH! OUCH! O
 
 [cont]
 
-You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.", lookAt: "/root/Start/Agamemnon"}
+You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.", lookAt: "/root/Start/Agamemnon", moveTo: "/root/Start/Agamemnon"}
 
 :: Dying Agamemnon
 "Oh. I am dying. How ironic, especially since my forebears invented Philosophy."
 
 [["So sorry to hear."]]
 
-[["You're Mycenaean."]]
+[["You're Mycenaean."->Mycenaean]]
 
 [["There's no space for your dead body; you're going straight out the airlock."]]
 
+:: Mycenaean
+"I just forgot..." Agamemnon gasps with his last breaths, "I forgot to tell you how to read Linear A..."
+
+[[Agamemnon dies on the spot.->Draw Chef]]
+
 :: Draw Chef
-Agamemnon unravels, leaving a sort of shapeless blob in its place. You are left with what Agamemnon once was.
+Agamemnon's body unravels, leaving a sort of shapeless blob in its place. You are left with what Agamemnon once was.
 
 [cont]
 

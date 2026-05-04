@@ -94,6 +94,6 @@ shape = SubResource("WorldBoundaryShape3D_p0nl4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40316695, 0.14216435, -25.975111)
 script = ExtResource("10_p0nl4")
 
-[node name="DeckRight" type="Marker3D" parent="POIs" unique_id=511894600]
+[node name="DeckLeft" type="Marker3D" parent="POIs" unique_id=511894600]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.890388, 0.14216435, -14.582614)
 script = ExtResource("10_p0nl4")
