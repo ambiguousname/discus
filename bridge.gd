@@ -12,8 +12,8 @@ func _ready() -> void:
 	js_twodot = JavaScriptBridge.get_interface("Twodot");
 	js_twodot.registerGodot(cb);
 
-var entities : Dictionary[String, Node];
-func register_entity(e : Node):
+var entities : Dictionary[String, Entity];
+func register_entity(e : Entity):
 	self.entities[e.name] = e;
 
 func sendEvent(event_name : String, event_value : Variant):
@@ -49,6 +49,66 @@ func receiveEvent(args : Array):
 						printerr("Found invalid call to %s: %s must be in an array" % [f, funcs[f]]);
 						return;
 					entity.callv(f, jsons_to_variant(funcs[f]));
+		"save_state":
+			var state : Dictionary = {};
+			for e in entities:
+				var entity = entities[e];
+				state[entity.name] = entity.save_state();
+			_send_state_data(state);
+		"load_state":
+			for e in entities:
+				var entity = entities[e];
+				if !entity.is_const:
+					entity.queue_free();
+					entities.erase(e);
+			
+			var state : Dictionary = _load_state_data(event_value);
+			for entity_name in state:
+				var entity_data : Dictionary = state[entity_name];
+				if entity_name in entities:
+					entities[entity_name].load_state(entity_data);
+				else:
+					if "ClassName" in entity_data:
+						var class_n : String = entity_data["ClassName"];
+						var obj : Object = ClassDB.instantiate(class_n);
+						entity_data.erase("ClassName");
+						if obj is Node:
+							var script = entity_data.get("script");
+							if script is String:
+								script = script.replace("resource_path:", "");
+								var script_res = load(script);
+								obj.set_script(script_res);
+								entity_data.erase("script");
+								
+								if obj is Entity:
+									obj.load_state(entity_data);
+							# We add children to ourselves, the state loading should properly update ownership after a frame:
+							self.add_child(obj);
+						else:
+							printerr("Entity %s is not a node (is a %s)." %  [entity_name, class_n]);
+							obj.free();
+					else:
+						printerr("Could not find ClassName for save state of entity %s" % entity_name);
+
+func _send_state_data(state : Dictionary):
+	var dat = JSON.stringify(state);
+	var gzip = StreamPeerGZIP.new();
+	gzip.start_compression();
+	gzip.put_data(dat.to_utf8_buffer());
+	gzip.finish();
+	var out : Array = gzip.get_data(gzip.get_available_bytes());
+	if out[0] != OK:
+		printerr("Could not compress data: ", out);
+	self.sendEvent("godotStateUpdate", Marshalls.raw_to_base64(out[1]));
+	gzip.clear();
+
+func _load_state_data(dat : String) -> Dictionary:
+	var gzip = StreamPeerGZIP.new();
+	gzip.start_decompression();
+	gzip.put_data(Marshalls.base64_to_raw(dat));
+	var out : String = gzip.get_utf8_string(gzip.get_available_bytes());
+	gzip.clear();
+	return JSON.parse_string(out);
 
 func jsons_to_variant(json_variants : Array[Variant]) -> Array[Variant]:
 	var out = [];

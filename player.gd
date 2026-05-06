@@ -1,4 +1,4 @@
-class_name Player extends CharacterBody3D
+class_name Player extends Entity
 
 @onready var cam : Camera3D = $Camera3D;
 @onready var fps_cam : PhantomCamera3D = $FPS;
@@ -8,6 +8,9 @@ class_name Player extends CharacterBody3D
 @export var look_at: Variant:
 	set(v):
 		self.set_look_at(v);
+		look_at = v;
+	get():
+		return look_at;
 
 @export var move_target : Vector3:
 	set(v):
@@ -16,8 +19,9 @@ class_name Player extends CharacterBody3D
 	get():
 		return move_target;
 
+@onready var controller : CharacterBody3D = $".";
 func _ready() -> void:
-	Bridge.register_entity(self);
+	super();
 	agent.velocity_computed.connect(func(safe_velocity : Vector3):
 		self.velocity = safe_velocity;
 	);
@@ -53,9 +57,9 @@ func _physics_process(delta: float) -> void:
 	if fps_cam.look_at_target == null:
 		fps_cam.global_rotation = fps_cam.global_rotation.lerp(Vector3.ZERO, delta);
 	
-	if !self.is_on_floor():
+	if !controller.is_on_floor():
 		self.velocity.y -= 9.8;
 	
 	agent.velocity = dir;
-	self.move_and_slide();
+	controller.move_and_slide();
 	

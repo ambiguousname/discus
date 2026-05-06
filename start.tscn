@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_4a3qj"]
 [ext_resource type="Texture2D" uid="uid://ov6kh1oivles" path="res://assets/images/Agamemnon.svg" id="7_g38d0"]
 [ext_resource type="Script" uid="uid://4onexhlhw6fa" path="res://clip_plane.gd" id="9_gophc"]
-[ext_resource type="Script" uid="uid://xew2epvjbgy6" path="res://poi.gd" id="10_p0nl4"]
+[ext_resource type="Script" uid="uid://magtjcjmaat3" path="res://entity.gd" id="10_p0nl4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
 shader = ExtResource("2_qn1rc")
@@ -47,6 +47,7 @@ transform = Transform3D(1, 0, 0, 0, -0.9789779, 0.20396635, 0, -0.20396635, -0.9
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1219222995]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -27.845715)
 script = ExtResource("3_4a3qj")
+is_const = true
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="Player" unique_id=1150241594]
 avoidance_enabled = true
@@ -77,6 +78,7 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 [node name="Agamemnon" type="Sprite3D" parent="." unique_id=847927874]
 transform = Transform3D(-0.39733306, 0, -0.046113584, 0, 0.4, 0, 0.046113584, 0, -0.39733306, 0.4158198, 1.2750063, -23.20139)
 texture = ExtResource("7_g38d0")
+script = ExtResource("10_p0nl4")
 
 [node name="ClipPlane" type="Area3D" parent="." unique_id=1355222674]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.343565, 0)
@@ -93,7 +95,9 @@ shape = SubResource("WorldBoundaryShape3D_p0nl4")
 [node name="DeckCenter" type="Marker3D" parent="POIs" unique_id=1520212135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40316695, 0.14216435, -25.975111)
 script = ExtResource("10_p0nl4")
+is_const = true
 
 [node name="DeckLeft" type="Marker3D" parent="POIs" unique_id=511894600]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.890388, 0.14216435, -14.582614)
 script = ExtResource("10_p0nl4")
+is_const = true

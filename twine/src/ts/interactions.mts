@@ -94,8 +94,6 @@ class Interactions {
 			this.#activeFocus = target;
 		}
 
-		console.log(lookAt);
-
 		twodot.sendGodotEvent("entity_update", JSON.stringify({
 			"entityName": "Player",
 			"funcs": {
