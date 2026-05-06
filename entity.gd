@@ -16,21 +16,30 @@ func save_state() -> Dictionary[String, Variant]:
 			_: pass
 		if property is Node:
 			property = "path:%s" % property.get_path();
-		if property is Resource:
+		elif property is Resource:
 			property = "resource_path:%s" % property.resource_path;
+		elif property is Color:
+			property = property.to_html();
 		state_dict[prop_name] = property;
 	state_dict["ClassName"] = self.get_class();
 	return state_dict;
 
-func load_state(state_dict : Dictionary):
-	# Not every entity is initialized (and we might be dependent on certain nodes existing),
-	# so we wait a frame to load:
-	await get_tree().process_frame;
+func load_state(state_dict : Dictionary, root : Node):
+	if "owner" in state_dict && not is_const:
+		root.get_node(state_dict["owner"].substr(5)).add_child(self);
+	elif not is_const:
+		printerr("Node %s does not have owner." % state_dict.get("name"));
+		return;
+	state_dict.erase("owner");
 	
 	for p in state_dict:
-		var prop_value = state_dict[p];
+		var prop_value : Variant = state_dict[p];
 		if prop_value is String:
 			if prop_value.begins_with("path:"):
 				var node_path = prop_value.substr(5);
-				prop_value = get_tree().get_node(node_path);
+				prop_value = root.get_node(node_path);
+			elif prop_value.begins_with("resource_path:"):
+				var resource_path = prop_value.substr(14);
+				prop_value = load(resource_path);
+		
 		self.set(p, prop_value);

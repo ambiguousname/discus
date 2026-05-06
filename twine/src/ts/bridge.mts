@@ -11,22 +11,23 @@ export class TwodotBridge {
 	#godotEventCallback : GodotEventCallback = () => {};
 
 	#canvas;
+	#justSaved = false;
 	constructor(canvas : HTMLCanvasElement) {
 		this.#canvas = canvas;
-
-		// Get our initial state:
-		let godotState = getState("godot-state");
-		if (typeof godotState == "string") {
-			this.sendGodotEvent("load_state", godotState);
-		} else if (godotState !== null) {
-			console.error("Could not load Godot State, got invalid value: ", godotState);
-		}
 
 		window.addEventListener("state-change", (ev) => {
 			let detail = ev.detail;
 			// If the trail has changed, then we need a snapshot of the current game state.
 			if (detail.name === "trail") {
+				// To avoid messaging Godot our state. 
+				this.#justSaved = true;
 				this.sendGodotEvent("save_state", null);
+			} else if (detail.name === "godot-state") {
+				if (this.#justSaved) {
+					this.#justSaved = false;
+				} else {
+					this.#loadGodotState();
+				}
 			}
 		});
 	}
@@ -37,6 +38,16 @@ export class TwodotBridge {
 
 	sendGodotEvent(name : String, value : GodotVariant) {
 		this.#godotEventCallback(name, value);
+	}
+
+	#loadGodotState() {
+		// Get our initial state:
+		let godotState = getState("godot-state");
+		if (typeof godotState == "string") {
+			this.sendGodotEvent("load_state", godotState);
+		} else if (godotState !== null && godotState !== undefined) {
+			console.error("Could not load Godot State, got invalid value: ", godotState);
+		}
 	}
 
 	/**
