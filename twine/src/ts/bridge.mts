@@ -18,11 +18,11 @@ export class TwodotBridge {
 		// TODO: Check only on click through to a new passage, rather than trail update.
 		// Otherwise this gets more hacky.
 
-		// window.addEventListener("passage-navigate", (ev) => {
-		// 	// To avoid Godot loading our state after we just set it:
-		// 	this.#justSaved = true;
-		// 	this.sendGodotEvent("save_state", null);
-		// })
+		window.addEventListener("passage-navigate", (ev) => {
+			// To avoid Godot loading our state after we just set it:
+			this.#justSaved = true;
+			this.sendGodotEvent("save_state", null);
+		})
 
 		window.addEventListener("state-change", (ev) => {
 			let detail = ev.detail;
