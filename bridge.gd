@@ -4,23 +4,16 @@ var cb : JavaScriptObject;
 var js_twodot : JavaScriptObject;
 
 func _ready() -> void:
-	# Mock save:
+	## Mock save:
 	#await get_tree().process_frame;
 	#var state : Dictionary = {};
 	#for e in entities:
 		#var entity = entities[e];
 		#state[entity.name] = entity.save_state();
-	#var dat = JSON.stringify(state);
-	#var gzip = StreamPeerGZIP.new();
-	#gzip.start_compression();
-	#gzip.put_data(dat.to_utf8_buffer());
-	#gzip.finish();
-	#var out : Array = gzip.get_data(gzip.get_available_bytes());
-	#if out[0] != OK:
-		#printerr("Could not compress data: ", out);
-	#gzip.clear();
-	# Mock Load:
-	#_load_state(Marshalls.raw_to_base64(out[1]));
+	## Mock load:
+	#_send_state_data(state, func(d): 
+		#_load_state(d);
+	#);
 
 	if OS.get_name() != "Web":
 		self.queue_free();
@@ -72,29 +65,33 @@ func receiveEvent(args : Array):
 			for e in entities:
 				var entity = entities[e];
 				state[entity.name] = entity.save_state();
-			_send_state_data(state);
+			_send_state_data(state, func(dat):
+				self.sendEvent("godotStateUpdate", dat);
+			);
 		"load_state":
 			_load_state(event_value);
 
-func _send_state_data(state : Dictionary):
-	var dat = JSON.stringify(state);
+func _send_state_data(state : Dictionary, callback : Callable):
 	var gzip = StreamPeerGZIP.new();
 	gzip.start_compression();
-	gzip.put_data(dat.to_utf8_buffer());
+	gzip.put_data(var_to_bytes(state));
 	gzip.finish();
 	var out : Array = gzip.get_data(gzip.get_available_bytes());
 	if out[0] != OK:
 		printerr("Could not compress data: ", out);
-	self.sendEvent("godotStateUpdate", Marshalls.raw_to_base64(out[1]));
+	callback.call(Marshalls.raw_to_base64(out[1]));
 	gzip.clear();
 
 func _load_state_data(dat : String) -> Dictionary:
 	var gzip = StreamPeerGZIP.new();
 	gzip.start_decompression();
 	gzip.put_data(Marshalls.base64_to_raw(dat));
-	var out : String = gzip.get_utf8_string(gzip.get_available_bytes());
+	var out : Array = gzip.get_data(gzip.get_available_bytes());
+	if out[0] != OK:
+		printerr("Could not load state data: ", out[0]);
+		return {};
 	gzip.clear();
-	return JSON.parse_string(out);
+	return bytes_to_var(out[1]);
 	
 func _load_state(state_data : String):
 	for e in entities:
@@ -129,12 +126,14 @@ func _load_state(state_data : String):
 			else:
 				printerr("Could not find ClassName for save state of entity %s" % entity_name);
 
+## JS -> GDScript conversion.
 func jsons_to_variant(json_variants : Array[Variant]) -> Array[Variant]:
 	var out = [];
 	for j in json_variants:
 		out.append(json_to_variant(j));
 	return out;
 
+## JS -> GDScript conversion.
 ## Attempt to do some smart conversions to types.
 func json_to_variant(json_variant : Variant) -> Variant:
 	if json_variant is String:
