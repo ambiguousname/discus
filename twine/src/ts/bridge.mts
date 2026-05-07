@@ -15,14 +15,18 @@ export class TwodotBridge {
 	constructor(canvas : HTMLCanvasElement) {
 		this.#canvas = canvas;
 
+		// TODO: Check only on click through to a new passage, rather than trail update.
+		// Otherwise this gets more hacky.
+
+		// window.addEventListener("passage-navigate", (ev) => {
+		// 	// To avoid Godot loading our state after we just set it:
+		// 	this.#justSaved = true;
+		// 	this.sendGodotEvent("save_state", null);
+		// })
+
 		window.addEventListener("state-change", (ev) => {
 			let detail = ev.detail;
-			// If the trail has changed, then we need a snapshot of the current game state.
-			if (detail.name === "trail") {
-				// To avoid messaging Godot our state. 
-				this.#justSaved = true;
-				this.sendGodotEvent("save_state", null);
-			} else if (detail.name === "godot-state") {
+			if (detail.name === "godot-state") {
 				if (this.#justSaved) {
 					this.#justSaved = false;
 				} else {

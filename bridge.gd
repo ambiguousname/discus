@@ -5,21 +5,22 @@ var js_twodot : JavaScriptObject;
 
 func _ready() -> void:
 	# Mock save:
-	# await get_tree().process_frame;
-	# var state : Dictionary = {};
-	# for e in entities:
-	# 	var entity = entities[e];
-	# 	state[entity.name] = entity.save_state();
-	# var dat = JSON.stringify(state);
-	# var gzip = StreamPeerGZIP.new();
-	# gzip.start_compression();
-	# gzip.put_data(dat.to_utf8_buffer());
-	# gzip.finish();
-	# var out : Array = gzip.get_data(gzip.get_available_bytes());
-	# if out[0] != OK:
-	# 	printerr("Could not compress data: ", out);
-	# gzip.clear();
-	# _load_state(Marshalls.raw_to_base64(out[1]));
+	#await get_tree().process_frame;
+	#var state : Dictionary = {};
+	#for e in entities:
+		#var entity = entities[e];
+		#state[entity.name] = entity.save_state();
+	#var dat = JSON.stringify(state);
+	#var gzip = StreamPeerGZIP.new();
+	#gzip.start_compression();
+	#gzip.put_data(dat.to_utf8_buffer());
+	#gzip.finish();
+	#var out : Array = gzip.get_data(gzip.get_available_bytes());
+	#if out[0] != OK:
+		#printerr("Could not compress data: ", out);
+	#gzip.clear();
+	# Mock Load:
+	#_load_state(Marshalls.raw_to_base64(out[1]));
 
 	if OS.get_name() != "Web":
 		self.queue_free();

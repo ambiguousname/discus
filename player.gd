@@ -5,15 +5,29 @@ class_name Player extends Entity
 
 @onready var agent : NavigationAgent3D = $NavigationAgent3D;
 
+var look_at_node : Node3D;
 @export var look_at: Variant:
 	set(v):
-		self.set_look_at(v);
 		look_at = v;
+		if look_at_node != null:
+			look_at_node.queue_free();
+		
+		if look_at is Node3D:
+			fps_cam.look_at_target = look_at;
+		elif look_at is Vector3:
+			look_at_node = Node3D.new();
+			self.add_child(look_at_node);
+			look_at_node.global_position = look_at;
+			fps_cam.look_at_target = look_at_node;
+		elif look_at == null:
+			fps_cam.look_at_target = null;
 	get():
 		return look_at;
 
-@export var move_target : Vector3:
+@export var move_target : Vector3 = Vector3.INF:
 	set(v):
+		if v == Vector3.INF:
+			return;
 		move_target = v;
 		agent.target_position = v;
 	get():
@@ -26,20 +40,8 @@ func _ready() -> void:
 		self.velocity = safe_velocity;
 	);
 
-var look_at_node : Node3D;
 func set_look_at(look_target : Variant):
-	if look_at_node != null:
-		look_at_node.queue_free();
-	
-	if look_target is Node3D:
-		fps_cam.look_at_target = look_target;
-	elif look_target is Vector3:
-		look_at_node = Node3D.new();
-		self.add_child(look_at_node);
-		look_at_node.global_position = look_target;
-		fps_cam.look_at_target = look_at_node;
-	elif look_target == null:
-		fps_cam.look_at_target = null;
+	self.look_at = look_target;
 
 func set_move_target(v):
 	if v is Vector3:
@@ -49,6 +51,7 @@ func set_move_target(v):
 	if v is Node3D:
 		move_target = v.global_position;
 		return;
+	
 
 func _physics_process(delta: float) -> void:
 	var pos = agent.get_next_path_position();
