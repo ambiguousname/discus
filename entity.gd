@@ -64,6 +64,9 @@ func load_state(state_dict : Dictionary, root : Node):
 		return;
 	state_dict.erase("owner");
 	
+	# Wait for other nodes to be initialized:
+	await get_tree().process_frame;
+	
 	for p in state_dict:
 		var prop_value : Variant = state_dict[p];
 		if prop_value is String:
