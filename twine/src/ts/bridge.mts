@@ -30,7 +30,7 @@ export class TwodotBridge {
 				if (this.#justSaved) {
 					this.#justSaved = false;
 				} else {
-					this.#loadGodotState();
+					this.loadGodotState();
 				}
 			}
 		});
@@ -44,7 +44,7 @@ export class TwodotBridge {
 		this.#godotEventCallback(name, value);
 	}
 
-	#loadGodotState() {
+	loadGodotState() {
 		// Get our initial state:
 		let godotState = getState("godot-state");
 		if (typeof godotState == "string") {

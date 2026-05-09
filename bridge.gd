@@ -3,6 +3,9 @@ extends Node
 var cb : JavaScriptObject;
 var js_twodot : JavaScriptObject;
 
+var is_loading : bool = false;
+signal loading_done();
+
 func _ready() -> void:
 	## Mock save:
 	#await get_tree().process_frame;
@@ -14,7 +17,6 @@ func _ready() -> void:
 	#_send_state_data(state, func(d): 
 		#_load_state(d);
 	#);
-
 	if OS.get_name() != "Web":
 		self.queue_free();
 		return; 
@@ -61,10 +63,13 @@ func receiveEvent(args : Array):
 						return;
 					entity.callv(f, jsons_to_variant(funcs[f]));
 		"save_state":
+			# DO NOT SAVE WHILE WE ARE LOADING
+			if is_loading:
+				await loading_done;
 			var state : Dictionary = {};
 			for e in entities:
 				var entity = entities[e];
-				state[entity.name] = entity.save_state();
+				state[entity.name] = await entity.save_state();
 			_send_state_data(state, func(dat):
 				self.sendEvent("godotStateUpdate", dat);
 			);
@@ -92,19 +97,22 @@ func _load_state_data(dat : String) -> Dictionary:
 		return {};
 	gzip.clear();
 	return bytes_to_var(out[1]);
-	
+
 func _load_state(state_data : String):
 	for e in entities:
 		var entity = entities[e];
 		if !entity.is_const:
 			entity.queue_free();
 			entities.erase(e);
-
+	# Wait for the existing entities to be freed.
+	await get_tree().process_frame;
+	
 	var state : Dictionary = _load_state_data(state_data);
+	# We will defer all calls here to ensure that all entity state loads are done in the same frame.
 	for entity_name in state:
 		var entity_data : Dictionary = state[entity_name];
 		if entity_name in entities:
-			entities[entity_name].load_state(entity_data, get_tree().root);
+			entities[entity_name].load_state.call_deferred(entity_data, get_tree().root);
 		else:
 			if "ClassName" in entity_data:
 				var class_n : String = entity_data["ClassName"];
@@ -119,12 +127,17 @@ func _load_state(state_data : String):
 						entity_data.erase("script");
 						
 						if obj is Entity:
-							obj.load_state(entity_data, get_tree().root);
+							obj.is_loading = true;
+							obj.load_state.call_deferred(entity_data, get_tree().root);
 				else:
 					printerr("Entity %s is not a node (is a %s)." %  [entity_name, class_n]);
 					obj.free();
 			else:
 				printerr("Could not find ClassName for save state of entity %s" % entity_name);
+	# Let the entities finish initializing:
+	await get_tree().process_frame;
+	is_loading = false;
+	loading_done.emit.call_deferred();
 
 ## JS -> GDScript conversion.
 func jsons_to_variant(json_variants : Array[Variant]) -> Array[Variant]:

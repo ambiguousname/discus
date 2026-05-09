@@ -101,6 +101,7 @@ async function init() {
 			}
 			if (page instanceof HTMLElement) {
 				page.style.opacity = "100%";
+				twodot.loadGodotState();
 			}
 		}, 100);
 	});

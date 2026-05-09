@@ -14,6 +14,8 @@ var look_at_node : Node3D;
 		
 		if look_at is Node3D:
 			fps_cam.look_at_target = look_at;
+		elif look_at is NodePath:
+			fps_cam.look_at_target = get_node(look_at);
 		elif look_at is Vector3:
 			look_at_node = Node3D.new();
 			self.add_child(look_at_node);
