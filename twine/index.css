@@ -33,6 +33,11 @@ select {
 	padding: 0.25em;
 }
 
+#page, #backdrop {
+	/* Don't want to be bothered with understanding Chapbook's state changing nonsense, this is just a quick and dirty override: */
+	background-color: #00000000 !important;
+}
+
 noscript {
 	align-items: center;
 	background: black;
