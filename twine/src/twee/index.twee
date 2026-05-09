@@ -10,7 +10,6 @@ Discus
 
 :: Start
 config.style.page.theme.enableSwitching: false
-config.style.backdrop: "hsl(0, 0%, 10%)"
 config.style.page.footer.border: "thin-line"
 config.style.page.footer.borderColor: "white"
 config.style.page.footer.link.active.color: "raspberry-3 on raspberry-6"
@@ -23,7 +22,12 @@ config.style.page.link.color: "white"
 config.style.page.link.lineColor: "raspberry-4"
 config.style.page.link.active.color: "raspberry-3 on raspberry-6"
 config.body.transition.duration: "0.1s"
+
+config.style.backdrop: "hsla(0, 0%, 0%, 0.00)"
+config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
+config.footer.center: "[[Settings]]"
 --
+
 # Discus
 
 [[Play]]
@@ -37,10 +41,6 @@ config.body.transition.duration: "0.1s"
 [[Credits]]
 
 :: Play
-config.style.backdrop: "hsla(0, 0%, 0%, 0.00)"
-config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
-config.footer.center: "[[Settings]]"
---
 [after 2 seconds]
 "You're a real loser. I hope you understand that you are perhaps, the most confounding barbarian I've ever had the displeasure of encountering. Our meeting is servant only to your fortunes, and what a sad affair they are."
 
