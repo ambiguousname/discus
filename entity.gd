@@ -32,6 +32,7 @@ func save_state() -> Dictionary:
 	state_dict["ClassName"] = self.get_class();
 	return state_dict;
 
+
 func load_state(state_dict : Dictionary, root : Node):
 	if "owner" in state_dict && not is_const && state_dict["owner"] is NodePath:
 		root.get_node(state_dict["owner"]).add_child(self);
@@ -39,6 +40,10 @@ func load_state(state_dict : Dictionary, root : Node):
 		printerr("Node %s does not have owner: %s" % [state_dict.get("name"), state_dict.get("owner")]);
 		return;
 	state_dict.erase("owner");
+	
+	if "name" in state_dict && state_dict["name"] is String:
+		self.name = state_dict["name"];
+		state_dict.erase("name");
 	
 	# Wait for other nodes to be initialized:
 	await get_tree().process_frame;
@@ -49,7 +54,12 @@ func load_state(state_dict : Dictionary, root : Node):
 			if prop_value.begins_with("resource_path:"):
 				var resource_path = prop_value.substr(14);
 				prop_value = load(resource_path);
-		self.set(p, prop_value);
+		
+		var prop_type = typeof(self.get(p));
+		match prop_type:
+			TYPE_OBJECT when prop_value is NodePath:
+				self.set(p, get_node(prop_value));
+			_: self.set(p, prop_value);
 
 ## Debugging purposes only. Do NOT use in production.
 func _will_save(property_name : String) -> bool:
