@@ -62,7 +62,7 @@ Interactions.cameraFocus("/root/Start/Agamemnon", true);
 
 [cont]
 
-"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. The spirit of Hera overtook me, and see where it has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-6, 0, -24]}"
+"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. Hera turned my eyes towards perfection, made me covet glory unending, and see where her influence has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-6, 0, -24]}"
 
 :: Unlock Door
 
@@ -85,19 +85,23 @@ You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.
 :: Dying Agamemnon
 "Oh. I am dying. How ironic, especially since my forebears invented Philosophy."
 
-[["So sorry to hear."]]
+[["So sorry to hear."->Sorry To Hear]]
 
-[["You're Mycenaean."->Mycenaean]]
+[["You were Mycenaean."->Mycenaean]]
 
-[["There's no space for your dead body; you're going straight out the airlock."]]
+[["There's no space for your dead body; you're going straight out the airlock."->Out The Airlock]]
+
+:: Sorry To Hear
+"Bleh. Bleh. Blah. Bleh." [[Agamemnon dies->Draw Chef]].
 
 :: Mycenaean
-"I just forgot..." Agamemnon gasps with his last breaths, "I forgot to tell you how to read Linear A..."
+"I just forgot..." Agamemnon gasps with his last breaths, "I forgot to tell you how to read Linear A..." [[Agamemnon dies->Draw Chef]].
 
-[[Agamemnon dies on the spot.->Draw Chef]]
+:: Out the Airlock
+"Could you shoot me out with a cool parrot or some kind of owl? I must pay tribute to the gods..." [[Agamemnon dies->Draw Chef]].
 
 :: Draw Chef
-Agamemnon's body unravels, leaving a sort of shapeless blob in its place. You are left with what Agamemnon once was.
+The substance holding Agamemnon together unravels into a loose collection of strands, tiny white threads. You reach to gather each. The torch is passed along to you, with the body of its proprietor. This is your restaurant, now.
 
 [cont]
 
