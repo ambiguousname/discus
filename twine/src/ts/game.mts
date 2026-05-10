@@ -71,6 +71,7 @@ async function init() {
 	modifiedConfig["canvasResizePolicy"] = 0;
 	modifiedConfig["canvas"] = canvas;
 	modifiedConfig["focusCanvas"] = false;
+	modifiedConfig["args"] = ["--remote-debug","ws://127.0.0.1:6007"]
 	modifiedConfig["onProgress"] = (current : number, total : number) => {
 		if (progress instanceof HTMLSpanElement) {
 			let p = current/total;
