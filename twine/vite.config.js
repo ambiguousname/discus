@@ -5,17 +5,29 @@ import {extname, resolve} from 'path';
 import {createHtmlPlugin} from 'vite-plugin-html';
 import {viteSingleFile} from 'vite-plugin-singlefile';
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { lstatSync } from "fs";
 
-// Modified from https://github.com/klembot/chapbook
-async function storyData() {
+async function readDir(dirPath) {
 	let source = '';
-	for (const filename of await readdir(resolve(__dirname, 'src/twee'))) {
+	for (const filename of await readdir(resolve(__dirname, 'src/twee', dirPath))) {
+		let pth = resolve(__dirname, 'src/twee', dirPath, filename);
+		let st = lstatSync(pth);
+		if (st.isDirectory()) {
+			source += await readDir(`${dirPath}/${filename}`);
+		}
 		if (extname(filename) !== '.twee') {
 			continue;
 		}
 
-		source += (await readFile(resolve(__dirname, 'src/twee', filename), 'utf8')) + '\n';
+		source += (await readFile(pth, 'utf8')) + '\n';
 	}
+
+	return source;
+}
+
+// Modified from https://github.com/klembot/chapbook
+async function storyData() {
+	let source = await readDir('.');
 
 	const story = parseTwee(source);
 	story.name = "Discus";
