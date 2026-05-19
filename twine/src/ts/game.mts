@@ -4,6 +4,7 @@ import { TwodotBridge } from "./bridge.mjs";
 import "./draw.mjs";
 import "./interactions.mjs";
 import "./formatting.mjs";
+import { warn } from "chapbook/src/runtime/logger";
 
 let canvas = document.getElementById("canvas");
 
@@ -15,6 +16,12 @@ if (canvas instanceof HTMLCanvasElement) {
 }
 let twodot : TwodotBridge = window["Twodot"];
 
+function onPrintError(args) {
+	console.error.apply(console, Array.from(arguments));
+	// TODO: Make this show up in Chapbook
+	warn("Godot", Array.from(arguments).toString());
+}
+
 async function init() {
 	let res = await fetch("Discus.json");
 	let config = JSON.parse(await res.text());
@@ -25,6 +32,7 @@ async function init() {
 	// modifiedConfig["onPrint"] = (msg) => {
 	// 	console.log(msg);
 	// };
+	modifiedConfig["onPrintError"] = onPrintError;
 
 	let Engine = window['Engine'];
 	const missing = Engine.getMissingFeatures({
