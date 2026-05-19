@@ -43,7 +43,11 @@ func save_state() -> Dictionary:
 			"global_rotation", "global_position", "global_basis", "global_rotation_degrees", "basis", "rotation", "position", "rotation_degrees", "transform": continue
 			"multiplayer": continue
 			_: pass
-		property = variant_to_json(property);
+		# See https://github.com/godotengine/godot-proposals/discussions/10098
+		if typeof(property) == TYPE_OBJECT && !is_instance_valid(property) && str(property) != "<Object#null>":
+			printerr(name, " Invalid instance: ", prop_name, " ", property);
+		else:
+			property = variant_to_json(property);
 		state_dict[prop_name] = property;
 	state_dict["ClassName"] = self.get_class();
 	if state_dict["owner"] == null:
