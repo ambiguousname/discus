@@ -26,17 +26,17 @@ config.body.transition.duration: "0.1s"
 config.style.backdrop: "hsla(0, 0%, 0%, 0.00)"
 config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
 config.footer.center: "[[Settings]]"
+
+// Placeholders for scenarios
+actorOne: { name: "Alice", pronouns: {plurality: "one", subject: "she", object: "her", dependent: "her", independent: "hers", reflexive: "herself"}}
+actorTwo: { name: "Bob", pronouns: {plurality: "one", subject: "he", object: "him", dependent: "his", independent: "his", reflexive: "himself"}}
 --
 
 # Discus
 
 [[Play]]
 
-[cont]
-
 [[Settings]]
-
-[cont]
 
 [[Credits]]
 
@@ -70,15 +70,9 @@ You move to unlock the door. Not even a second passes before you hear Agamemnon'
 
 :: Anguished Screams
 
-[cont]
-
 "AUGH! OW! AHHH! OUCH! OUCH! OUCH! OUCH! OUCH!" A random smattering of objects can be heard clanging behind you.
 
-[cont]
-
 All is quite for a half second, until you hear the screams again. "OUCH! OUCH! OUCH! OH NO! NOT THE ANVIL! NO! OW! OW! WOULD! YOU! STOP! THAT! OW! AEGISTHUS SAVE ME! ALMIGHTY- OW! ZEUS!"
-
-[cont]
 
 You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.", lookAt: "/root/Start/Agamemnon", moveTo: "/root/Start/Agamemnon"}
 
@@ -103,10 +97,6 @@ You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.
 :: Draw Chef
 The substance holding Agamemnon together unravels into a loose collection of strands, tiny white threads. You reach to gather each. The torch is passed along to you, with the body of its proprietor. This is your restaurant, now.
 
-[cont]
-
 Draw a Chef.
-
-[cont]
 
 <draw-entity></draw-entity>

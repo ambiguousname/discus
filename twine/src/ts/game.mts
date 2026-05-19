@@ -3,6 +3,7 @@ import "../../../build/Discus";
 import { TwodotBridge } from "./bridge.mjs";
 import "./draw.mjs";
 import "./interactions.mjs";
+import "./formatting.mjs";
 
 let canvas = document.getElementById("canvas");
 
