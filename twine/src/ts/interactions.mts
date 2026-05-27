@@ -2,6 +2,9 @@ import { add as addInsert } from 'chapbook/src/runtime/template/inserts';
 import { htmlify } from 'chapbook/src/runtime/util';
 import { twodot } from './game.mjs';
 import { JSONVariant } from './bridge.mjs';
+import { PassageLink } from 'chapbook/src/runtime/template/custom-elements/passage-link';
+import { warn } from 'chapbook/src/runtime/logger';
+import { DrawError, DrawErrorType } from './draw.mjs';
 
 addInsert({
 	match: /glink/i,
@@ -45,6 +48,76 @@ addInsert({
 		]);
 	}
 });
+
+export class SubmitPassageLink extends PassageLink {
+	constructor() {
+		super();
+		this.addEventListener("click", async (ev) => {
+			let promise : Promise<SVGElement> | DrawError = new Function(this.getAttribute("validate") ?? "")();
+			let svg : SVGElement;
+			if (promise instanceof DrawError) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				document.getElementById("draw-error")?.remove();
+				let errorText = document.createElement("div");
+
+				let errorMsg : string;
+				switch (promise.type) {
+					case DrawErrorType.EMPTY:
+						errorMsg = "Creation flows from substance. You cannot create from nothing!";
+						break;
+					default:
+						errorMsg = "I cannot determine the source of your problems. Please contact the creator of your reality at your soonest convenience.";
+						break;
+				}
+				errorText.innerHTML = `<p>You hear your grandfather's words in your mind: "${errorMsg}"</p> <p>Surprised by his sudden outburst, you take a minute to compose yourself.</p>`;
+				errorText.id = "draw-error";
+				if (this.parentNode !== null) {
+					this.parentNode.insertBefore(errorText, this);
+				}
+				return;
+			} else {
+				svg = await promise;
+			}
+			for (let child of svg.getElementsByClassName("js-draw-image-background")) {
+				child.remove();
+			}
+			
+			let serializer = new XMLSerializer();
+			let str = serializer.serializeToString(svg);
+			twodot.sendGodotEvent("create-entity", JSON.stringify({
+				img: str,
+				type: "image/svg+xml",
+				name: this.getAttribute("name"),
+			}));
+		}, {
+			capture: true
+		});
+	}
+}
+window.customElements.define('submit-passage-link', SubmitPassageLink);
+
+addInsert({
+	match: /finish_draw/i,
+	render(target, options) {
+		if (target === null) {
+			return;
+		}
+		
+		let label = options["label"];
+		let id = options["id"];
+		if (id === undefined) { 
+			console.error("ID for entity-draw is not defined.");
+		}
+
+		return htmlify('submit-passage-link', {
+			class: 'link',
+			validate: `return document.getElementById("${id}").finish();`,
+			name: options["name"],
+			to: target
+		}, [ label ?? target ]);
+	}
+})
 
 class Vector3 {
 	x: number = 0;

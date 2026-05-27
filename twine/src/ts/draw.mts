@@ -7,6 +7,17 @@ const settings : Partial<EditorSettings> = {
 	wheelEventsEnabled: false,
 };
 
+export enum DrawErrorType {
+	EMPTY
+}
+
+export class DrawError {
+	type : DrawErrorType;
+	constructor(t : DrawErrorType) {
+		this.type = t;
+	}
+}
+
 class EntityDraw extends HTMLElement {
 	#editor : Editor;
 	#toolbar : AbstractToolbar;
@@ -43,11 +54,13 @@ class EntityDraw extends HTMLElement {
 		this.#toolbar.addWidgetsForPrimaryTools();
 	}
 
-	finish() : string {
-		let serializer = new XMLSerializer();
-		let str = serializer.serializeToString(this.#editor.toSVG());
+	finish() : Promise<SVGElement> | DrawError {
+		if (this.#editor.image.getAllComponents().length === 0) {
+			return new DrawError(DrawErrorType.EMPTY);
+		}
+		let svg = this.#editor.toSVGAsync();
 		this.#editor.remove();
-		return str;
+		return svg;
 	}
 };
 

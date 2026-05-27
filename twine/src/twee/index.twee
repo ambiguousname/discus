@@ -83,7 +83,7 @@ You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.
 
 [["You were Mycenaean."->Mycenaean]]
 
-[["There's no space for your dead body; you're going straight out the airlock."->Out The Airlock]]
+[["There's no space for your dead body; you're going straight out the airlock."->Out the Airlock]]
 
 :: Sorry To Hear
 "Bleh. Bleh. Blah. Bleh." [[Agamemnon dies->Draw Chef]].
@@ -99,4 +99,8 @@ The substance holding Agamemnon together unravels into a loose collection of str
 
 Draw a Chef.
 
-<draw-entity></draw-entity>
+<entity-draw id="chef-draw"></entity-draw>
+
+{finish_draw: "Drawn Chef", label: `"I have finished."`, id: "chef-draw", name: "Chef"}
+
+:: Drawn Chef
