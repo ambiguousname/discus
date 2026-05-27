@@ -1,4 +1,4 @@
-import Editor, { AbstractToolbar, BackgroundComponentBackgroundType, Color4, EditorSettings, EraserTool, PanZoomTool, PenTool, ToolEnabledGroup } from "js-draw";
+import Editor, { AbstractToolbar, BackgroundComponentBackgroundType, Color4, EditorSettings, EraserTool, EraserToolWidget, PanZoomTool, PenTool, PenToolWidget, ToolEnabledGroup } from "js-draw";
 import 'js-draw/styles';
 
 const settings : Partial<EditorSettings> = {
@@ -18,6 +18,33 @@ export class DrawError {
 	}
 }
 
+class OpaquePenTool extends PenTool {
+	setColor(color: Color4): void {
+		if (color.a < 1.0) {
+			color = Color4.ofRGB(color.r, color.g, color.b);
+		}
+		super.setColor(color);
+	}
+}
+
+class OpaquePenToolWidget extends PenToolWidget {
+	fillDropdown(dropdown: HTMLElement, helpDisplay) {
+		let out = super.fillDropdown(dropdown, helpDisplay);
+		let input = dropdown.querySelector("input.coloris_input");
+		if (input instanceof HTMLInputElement) {
+			input.addEventListener("input", () => {
+				let c = Color4.fromHex(input.value);
+				if (c.a < 1.0) {
+					input.value = Color4.ofRGB(c.r, c.g, c.b).toHexString();
+				}
+			}, {
+				capture: true
+			});
+		}
+		return out;
+	}
+}
+
 class EntityDraw extends HTMLElement {
 	#editor : Editor;
 	#toolbar : AbstractToolbar;
@@ -33,12 +60,12 @@ class EntityDraw extends HTMLElement {
 		let tools = this.#editor.toolController;
 
 		let group = new ToolEnabledGroup();
-		let pen = new PenTool(this.#editor, this.#editor.localization.penTool(1), {
+		let pen = new OpaquePenTool(this.#editor, this.#editor.localization.penTool(1), {
 			color: Color4.white,
 		});
 		pen.setToolGroup(group);
 
-		let penTwo = new PenTool(this.#editor, this.#editor.localization.penTool(2), {
+		let penTwo = new OpaquePenTool(this.#editor, this.#editor.localization.penTool(2), {
 			color: Color4.red,
 		});
 		penTwo.setToolGroup(group);
@@ -51,7 +78,10 @@ class EntityDraw extends HTMLElement {
 		
 		this.#toolbar = this.#editor.addToolbar(false);
 		this.#toolbar.addUndoRedoButtons();
-		this.#toolbar.addWidgetsForPrimaryTools();
+		this.#toolbar.addWidget(new OpaquePenToolWidget(this.#editor, pen, this.#editor.localization));
+		this.#toolbar.addWidget(new OpaquePenToolWidget(this.#editor, penTwo, this.#editor.localization));
+		this.#toolbar.addWidget(new EraserToolWidget(this.#editor, eraser, this.#editor.localization));
+		// this.#toolbar.addWidgetsForPrimaryTools();
 	}
 
 	finish() : Promise<SVGElement> | DrawError {
