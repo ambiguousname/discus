@@ -28,8 +28,8 @@ config.style.page.background-color: "hsla(0, 0%, 0%, 0.00)"
 config.footer.center: "[[Settings]]"
 
 // Placeholders for scenarios
-actorOne: { name: "Alice", pronouns: {plurality: "one", subject: "she", object: "her", dependent: "her", independent: "hers", reflexive: "herself"}}
-actorTwo: { name: "Bob", pronouns: {plurality: "one", subject: "he", object: "him", dependent: "his", independent: "his", reflexive: "himself"}}
+actorOne: { name: "Alice", pronouns: {plurality: "one", subject: "she", object: "her", dependent: "her", independent: "hers", reflexive: "herself", contraction: "she's"}}
+actorTwo: { name: "Bob", pronouns: {plurality: "one", subject: "he", object: "him", dependent: "his", independent: "his", reflexive: "himself", contraction: "he's"}}
 --
 
 # Discus
@@ -63,6 +63,7 @@ Interactions.cameraFocus("/root/Start/Agamemnon", true);
 [cont]
 
 "I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. Hera turned my eyes towards perfection, made me covet glory unending, and see where her influence has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-6, 0, -24]}"
+
 
 :: Unlock Door
 
@@ -104,3 +105,23 @@ Draw a Chef.
 {finish_draw: "Drawn Chef", label: `"I have finished."`, id: "chef-draw", name: "Chef"}
 
 :: Drawn Chef
+Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step right up! Meet the Postmodern Prometheus. Stare in marvel as they bring life to that which is dead! Flesh becomes substance, substance flesh. Agamemnon's body pulled and twisted into life anew, creating this being of your choice.
+
+What will you call them?
+
+<input/>
+
+[["Donezo."->Named Chef]]
+
+:: Named Chef
+actorOneIntro: `${capitalize(actorOne.pronouns.subject)} extends a physical formal greeting. "The name is ${actorOne.name}, your new Chef. I look forward to working with you."`
+actorOneIntro (actorOne.personality === "stooge"): `${capitalize(actorOne.pronouns.subject)} slams into the metal of the Discus, letting the hollow <i>CLANG</i> ring out before speaking. "They call me ${actorOne.name}, professional Chef. And you seem pretty cool. I think. Don't rush me, I'm still figuring that out, actually."`
+actorOneIntro (actorOne.personality === "hothead"): `${capitalize(actorOne.pronouns.subject)} throws a loose bit of metal shavings at you. "I'm ${actorOne.name}, your new Chef. Don't get on my bad side."`
+actorOneIntro (actorOne.personality === "goth"): `${capitalize(actorOne.pronouns.subject)} makes grim eye contact (or ${actorOne.pronouns.object} equivalent) with you. "You may refer to me colloquially as ${actorOne.name}. As long as you are not affiliated with any of my many enemies, I shall prove to be an adequate Chef."`
+actorOneIntro (actorOne.personality === "nerd"): `${capitalize(actorOne.pronouns.subject)} regards you with some disdain. "Greetings and salutations. I am ${actorOne.name}, your new Chef, and I think we will get along fine."`
+--
+
+{actorOneIntro}
+
+[["Nice to meet you."]]
+[["Don't talk to me that way."]]

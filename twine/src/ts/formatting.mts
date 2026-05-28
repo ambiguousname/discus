@@ -13,7 +13,7 @@ addInsert({
 			return "";
 		}
 	}
-})
+});
 
 
 // Follows the rough spec from https://cldr.unicode.org/index/cldr-spec/plural-rules
@@ -47,4 +47,4 @@ addInsert({
 		}
 		return options["other"];
 	}
-})
+});
