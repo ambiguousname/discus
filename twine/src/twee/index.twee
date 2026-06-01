@@ -100,18 +100,25 @@ The substance holding Agamemnon together unravels into a loose collection of str
 
 Draw a Chef.
 
-<entity-draw id="chef-draw"></entity-draw>
-
-{finish_draw: "Drawn Chef", label: `"I have finished."`, id: "chef-draw", name: "Chef"}
+<form>
+<entity-draw name="chef" required></entity-draw>
+<submit-passage-link class="link" to="Drawn Chef">"I have finished."</submit-passage-link>
+</form>
 
 :: Drawn Chef
-Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step right up! Meet the Postmodern Prometheus. Stare in marvel as they bring life to that which is dead! Flesh becomes substance, substance flesh. Agamemnon's body pulled and twisted into life anew, creating this being of your choice.
+[JavaScript]
+Interactions.createEntity("user://chef.svg", "Chef");
+
+[cont]
+Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step right up! Meet the Postmodern Prometheus. Stare in dumbstruck awe as they bring life to that which is dead! Flesh becomes substance, substance flesh. Agamemnon's body pulled and twisted into life anew, creating this being of your choice.
 
 What will you call them?
 
-<input/>
-
-[["Donezo."->Named Chef]]
+<form>
+<input name="Chef" godot-prop-name="entity_name" required/>
+<br/>
+<submit-passage-link class="link" to="Named Chef">"Donezo."</submit-passage-link>
+</form>
 
 :: Named Chef
 actorOneIntro: `${capitalize(actorOne.pronouns.subject)} extends a physical formal greeting. "The name is ${actorOne.name}, your new Chef. I look forward to working with you."`
@@ -124,4 +131,5 @@ actorOneIntro (actorOne.personality === "nerd"): `${capitalize(actorOne.pronouns
 {actorOneIntro}
 
 [["Nice to meet you."]]
+
 [["Don't talk to me that way."]]

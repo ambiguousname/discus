@@ -7,6 +7,20 @@ export type JSONVariant = Array<JSONVariant> | string | number | boolean | null;
 type GodotVariant = string | number | boolean | null;
 type GodotEventCallback = (name : String, value : GodotVariant) => void;
 
+export interface GodotUpdateEntityValue {
+	entityName : string,
+	/**
+	 * Key: Property to update
+	 * Value: Value to set the property to.
+	 */
+	props? : Record<string, JSONVariant>,
+	/**
+	 * Key: Function to call.
+	 * Value: Array of arguments to be passed into the function.
+	 */
+	funcs? : Record<string, Array<JSONVariant>>
+};
+
 export class TwodotBridge {
 	#godotEventCallback : GodotEventCallback = () => {};
 

@@ -4,15 +4,17 @@
 
 import { add as addInsert } from "chapbook/src/runtime/template/inserts";
 
+window["capitalize"] = (text) => {
+	if (typeof text === "string") {
+		return text.charAt(0).toUpperCase() + text.substring(1, text.length);
+	} else {
+		return "";
+	}
+};
+
 addInsert({
 	match: /capitalize/i,
-	render(target, options) {
-		if (typeof target === "string") {
-			return target.charAt(0).toUpperCase() + target.substring(1, target.length);
-		} else {
-			return "";
-		}
-	}
+	render: window["capitalize"],
 });
 
 

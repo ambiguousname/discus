@@ -29,6 +29,10 @@ var entities : Dictionary[String, Entity];
 func register_entity(e : Entity):
 	self.entities[e.name] = e;
 
+var entity_creator : EntityCreator;
+func register_entity_creator(e : EntityCreator):
+	entity_creator = e;
+
 func sendEvent(event_name : String, event_value : Variant):
 	js_twodot.sendTwineEvent(event_name, event_value);
 
@@ -75,6 +79,39 @@ func receiveEvent(args : Array):
 			);
 		"load_state":
 			_load_state(event_value);
+		"save_drawing":
+			save_drawing(JSON.parse_string(event_value));
+		"create_entity":
+			create_entity(JSON.parse_string(event_value));
+
+func save_drawing(d : Dictionary):
+	var mime_type = d.get("type");
+	if mime_type != "image/svg+xml":
+		printerr("Mime type %s not supported." % mime_type);
+		return;
+	var img_name = d.get("name");
+	if !(img_name is String):
+		printerr("Image name should be a string: ", img_name);
+		return; 
+	var svg_str = d.get("img");
+	if svg_str is String:
+		var f = FileAccess.open("user://%s.svg" % img_name, FileAccess.WRITE);
+		f.store_string(svg_str);
+		f.close();
+		return;
+	else:
+		printerr("SVG is not a string: ", svg_str);
+
+func create_entity(d : Dictionary):
+	var entity_name = d.get("entityName");
+	if not (entity_name is String):
+		printerr("Entity name is not String for create_entity call:", entity_name, " ", d);
+		return;
+	var texture_path = d.get("texturePath");
+	if not (texture_path is String):
+		printerr("Texture path is not String for %s: " % entity_name, texture_path);
+		return;
+	entity_creator.add_sprite_entity(entity_name, texture_path);
 
 func _send_state_data(state : Dictionary, callback : Callable):
 	var gzip = StreamPeerGZIP.new();

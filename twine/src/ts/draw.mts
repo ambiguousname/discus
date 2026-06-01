@@ -45,7 +45,7 @@ class OpaquePenToolWidget extends PenToolWidget {
 	}
 }
 
-class EntityDraw extends HTMLElement {
+export class EntityDraw extends HTMLElement {
 	#editor : Editor;
 	#toolbar : AbstractToolbar;
 	constructor() {
@@ -84,10 +84,14 @@ class EntityDraw extends HTMLElement {
 		// this.#toolbar.addWidgetsForPrimaryTools();
 	}
 
-	finish() : Promise<SVGElement> | DrawError {
+	checkValidation() {
 		if (this.#editor.image.getAllComponents().length === 0) {
-			return new DrawError(DrawErrorType.EMPTY);
+			throw new DrawError(DrawErrorType.EMPTY);
 		}
+	}
+
+	finish() : Promise<SVGElement> {
+		this.checkValidation();
 		let svg = this.#editor.toSVGAsync();
 		this.#editor.remove();
 		return svg;

@@ -4,6 +4,8 @@ class_name Entity extends Node3D
 @export var is_const : bool = false;
 var is_loading : bool = false;
 signal loading_done();
+## Used by Twine.
+@export var entity_name : String = "Unknown";
 
 ## As a fallback for non-const nodes.
 ## Godot doesn't seem to like setting the value of `owner` in some cases,
@@ -54,14 +56,18 @@ func save_state() -> Dictionary:
 		state_dict["owner"] = owner_path;
 	return state_dict;
 
-func load_state(state_dict : Dictionary, root : Node):
+func load_state(state_dict : Dictionary, root : Node) -> Error:
 	is_loading = true;
 	if "owner" in state_dict && not is_const && state_dict["owner"] is NodePath:
 		owner_path = state_dict["owner"];
-		root.get_node(state_dict["owner"]).add_child(self);
+		if not root.has_node(owner_path):
+			printerr("Node '%s' does not exist for node '%s' (type %s)" % [owner_path, state_dict.get("name", self.name), self.get_class()]);
+			return FAILED;
+		else:
+			root.get_node(owner_path).add_child(self);
 	elif not is_const:
 		printerr("Node %s does not have owner: %s" % [state_dict.get("name"), state_dict.get("owner")]);
-		return;
+		return FAILED;
 	state_dict.erase("owner");
 	
 	if "name" in state_dict && (state_dict["name"] is String or state_dict["name"] is StringName):
@@ -76,7 +82,10 @@ func load_state(state_dict : Dictionary, root : Node):
 		if prop_value is String:
 			if prop_value.begins_with("resource_path:"):
 				var resource_path = prop_value.substr(14);
-				prop_value = load(resource_path);
+				if not ResourceLoader.exists(resource_path):
+					printerr("Failed to set %s: Resource path %s does not exist" % [p, resource_path]);
+				else:
+					prop_value = ResourceLoader.load(resource_path);
 		
 		var prop_type = typeof(self.get(p));
 		match prop_type:
@@ -86,6 +95,7 @@ func load_state(state_dict : Dictionary, root : Node):
 	
 	is_loading = false;
 	loading_done.emit.call_deferred();
+	return OK;
 
 ## Debugging purposes only. Do NOT use in production.
 func _will_save(property_name : String) -> bool:
