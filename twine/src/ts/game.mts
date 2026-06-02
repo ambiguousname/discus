@@ -6,15 +6,22 @@ import "./interactions.mjs";
 import "./formatting.mjs";
 import { warn } from "chapbook/src/runtime/logger";
 
+declare global {
+	interface Window {
+		Twodot : TwodotBridge,
+		Engine : any
+	}
+}
+
 let canvas = document.getElementById("canvas");
 
 if (canvas instanceof HTMLCanvasElement) {
 	let aspectRatio = 1152/648;
 	canvas.width = window.innerHeight * aspectRatio;
 	canvas.height = window.innerHeight;
-	window["Twodot"] = new TwodotBridge(canvas);
+	window.Twodot = new TwodotBridge(canvas);
 }
-let twodot : TwodotBridge = window["Twodot"];
+let twodot : TwodotBridge = window.Twodot;
 
 function onPrintError(args) {
 	console.error.apply(console, Array.from(arguments));
@@ -34,7 +41,7 @@ async function init() {
 	// };
 	modifiedConfig["onPrintError"] = onPrintError;
 
-	let Engine = window['Engine'];
+	let Engine = window.Engine;
 	const missing = Engine.getMissingFeatures({
 		threads: GODOT_THREADS_ENABLED,
 	});

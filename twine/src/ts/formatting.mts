@@ -4,7 +4,11 @@
 
 import { add as addInsert } from "chapbook/src/runtime/template/inserts";
 
-window["capitalize"] = (text) => {
+declare global {
+	interface Window { capitalize: (text : string | null) => string }
+}
+
+window.capitalize = (text) => {
 	if (typeof text === "string") {
 		return text.charAt(0).toUpperCase() + text.substring(1, text.length);
 	} else {
@@ -14,7 +18,7 @@ window["capitalize"] = (text) => {
 
 addInsert({
 	match: /capitalize/i,
-	render: window["capitalize"],
+	render: window.capitalize,
 });
 
 

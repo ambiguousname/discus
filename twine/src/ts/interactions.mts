@@ -6,6 +6,13 @@ import { PassageLink } from 'chapbook/src/runtime/template/custom-elements/passa
 import { warn } from 'chapbook/src/runtime/logger';
 import { DrawError, DrawErrorType, EntityDraw } from './draw.mjs';
 
+declare global {
+	interface Window { 
+		Vector3: Function,
+		Interactions : Interactions
+	}
+}
+
 addInsert({
 	match: /glink/i,
 	render(target, options) {
@@ -167,6 +174,7 @@ class Vector3 {
 		this.z = z;
 	}
 }
+window.Vector3 = Vector3;
 
 type InteractionType = Vector3 | Array<InteractionType> | string | number | null;
 
@@ -227,12 +235,32 @@ class Interactions {
 		}));
 	}
 
-	createEntity(texturePath: string, entityName: string) {
+	createEntity(entityName: string, texturePath: string) {
 		twodot.sendGodotEvent("create_entity", JSON.stringify({
 			texturePath: texturePath,
 			entityName: entityName
 		}));
 	}
+
+	updateEntity(entityName: string, properties : Record<string, InteractionType>, functions : Record<string, InteractionType[]>) {
+		let props = {};
+		let funcs = {};
+		for (let prop in properties) {
+			props[prop] = this.#interactionStringToVariant(properties[prop]);
+		}
+		for (let f in functions) {
+			funcs[f] = functions[f].map((v) => {
+				return this.#interactionStringToVariant(v);
+			});
+		}
+		
+		let v : GodotUpdateEntityValue = {
+			entityName: entityName,
+			props: props,
+			funcs: funcs
+		};
+		twodot.sendGodotEvent("entity_update", JSON.stringify(v));
+	}
 }
 
-window["Interactions"] = new Interactions();
+window.Interactions = new Interactions();

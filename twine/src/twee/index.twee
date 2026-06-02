@@ -62,7 +62,7 @@ Interactions.cameraFocus("/root/Start/Agamemnon", true);
 
 [cont]
 
-"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. Hera turned my eyes towards perfection, made me covet glory unending, and see where her influence has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-6, 0, -24]}"
+"I aim to say that *warriors* once graced this hall. Now there is only you, and there is only me." He flexes one pec thoughtfully. "But I am mostly here to reminisce and despair over the sickness I am afflicted with. Hera turned my eyes towards perfection, made me covet glory unending, and see where her influence has gotten me." He eyes you up and down. "I am sure you will make a mediocre proprietor. Do me one last favor? {glink: "Unlock Door", label: "Unlock the door for my departure?", lookAt: [-20, 0, -14], moveTo: [-8, 0, -24]}"
 
 
 :: Unlock Door
@@ -70,7 +70,14 @@ Interactions.cameraFocus("/root/Start/Agamemnon", true);
 You move to unlock the door. Not even a second passes before you hear Agamemnon's [[anguished screams->Anguished Screams]].
 
 :: Anguished Screams
+[JavaScript]
+Interactions.updateEntity("Agamemnon", {
+    global_rotation_degrees: new Vector3(-90, -90, 0),
+}, {
+    global_translate: [new Vector3(0.0, -1.0, 0.0)]
+});
 
+[cont]
 "AUGH! OW! AHHH! OUCH! OUCH! OUCH! OUCH! OUCH!" A random smattering of objects can be heard clanging behind you.
 
 All is quite for a half second, until you hear the screams again. "OUCH! OUCH! OUCH! OH NO! NOT THE ANVIL! NO! OW! OW! WOULD! YOU! STOP! THAT! OW! AEGISTHUS SAVE ME! ALMIGHTY- OW! ZEUS!"
@@ -107,7 +114,7 @@ Draw a Chef.
 
 :: Drawn Chef
 [JavaScript]
-Interactions.createEntity("user://chef.svg", "Chef");
+Interactions.createEntity("Chef", "user://chef.svg");
 
 [cont]
 Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step right up! Meet the Postmodern Prometheus. Stare in dumbstruck awe as they bring life to that which is dead! Flesh becomes substance, substance flesh. Agamemnon's body pulled and twisted into life anew, creating this being of your choice.
