@@ -1,0 +1,17 @@
+<!-- TODO: Limit actorOne to chef role. -->
+:: Menu_Enter
+
+"What food do we serve here?" {glink: "Menu_Question", label: `${actorOne.name}'s question dislodges your thought from the stomach of indigestible truths.`, lookAt: `e:${actorOne.entity}`}
+
+:: Menu_Question
+actorOneQ: `"What should I put on the menu? So far I've been serving burned grits."`
+actorOneQ (actorOne.personality === "nerd"): `"Like, I've just been heating up frozen pizza. Is that good enough?"`
+actorOneQ (actorOne.personality === "stooge"): `"A customer asked me if we offered anything other than 'ambience and empty plates'.", ${capitalize(actorOne.pronouns.subject)} makes some air quotes, "Is there something else?"`
+actorOneQ (actorOne.personality === "goth"): `"I have found it necessary to draw from casks within my private stores, though it seems more equitable if you were to shoulder the burden of menu planning yourself."`
+actorOneQ (actorOne.personality === "stoic"): `"I've been dusting crumbs and serving them on plates. That doesn't really seem satisfactory."`
+--
+{actorOneQ}
+
+[["Do you have any ideas?"->Menu_Idea]]
+[["Give me some crayons, I'll draw the menu."->Menu_Draw]]
+[["Whatever the customer wants."->Menu_Whatever]]
