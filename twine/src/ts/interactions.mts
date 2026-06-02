@@ -210,6 +210,15 @@ class Entity {
 		twodot.sendGodotEvent("entity_update", JSON.stringify(v));
 	}
 
+	async getState() : Promise<any> {
+		let state = await twodot.sendRecvGodotEvent("get_entity_state", this.#name);
+		if (typeof state === "string") {
+			return JSON.parse(state);
+		} else {
+			return "<unknown>";
+		}
+	}
+
 	globalTranslate(v : Vector3) {
 		this.update({}, {
 			global_translate: [v]
@@ -226,7 +235,7 @@ window.Entity = Entity;
 
 export class Interactions {
 	#activeFocus : InteractionType = null;
-	#player : Entity | null = new Entity("Player");
+	player : Entity | null = new Entity("Player");
 
 	static interactionStringToVariant(i : InteractionType) : JSONVariant | null {
 		if (typeof i == "string") {
@@ -258,7 +267,7 @@ export class Interactions {
 		if (permanent) {
 			this.#activeFocus = target;
 		}
-		this.#player?.update({}, {
+		this.player?.update({}, {
 			set_look_at: [target]
 		})
 	}
@@ -267,7 +276,7 @@ export class Interactions {
 	}
 	
 	moveTo(target : InteractionType) {
-		this.#player?.update({}, {
+		this.player?.update({}, {
 			set_move_target: [target]
 		});
 	}

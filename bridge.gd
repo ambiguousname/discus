@@ -101,6 +101,12 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 				return null;
 			else:
 				return n.get_instance_id();
+		"get_entity_state":
+			var e = entities.get(event_value);
+			if e is Entity:
+				return JSON.stringify(e.save_state());
+			else:
+				return null;
 	return null;
 
 func save_drawing(d : Dictionary):
