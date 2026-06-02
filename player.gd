@@ -11,6 +11,7 @@ var look_at_node : Node3D;
 		look_at = v;
 		if look_at_node != null:
 			look_at_node.queue_free();
+			look_at_node = null;
 		
 		if look_at is Node3D:
 			fps_cam.look_at_target = look_at;
