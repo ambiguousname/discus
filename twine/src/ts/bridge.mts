@@ -6,6 +6,7 @@ import { get as getState, set as setState } from "chapbook/src/runtime/state";
 export type JSONVariant = Array<JSONVariant> | string | number | boolean | null;
 type GodotVariant = string | number | boolean | null;
 type GodotEventCallback = (name : String, value : GodotVariant) => void;
+type GodotEventResponseCallback = (name : String, response_id: number, value : GodotVariant) => void;
 
 export interface GodotUpdateEntityValue {
 	entityName : string,
@@ -21,13 +22,16 @@ export interface GodotUpdateEntityValue {
 	funcs? : Record<string, Array<JSONVariant>>
 };
 
+type GodotMessageResolver = (v : GodotVariant) => void;
+
 export class TwodotBridge {
 	#godotEventCallback : GodotEventCallback = () => {};
+	#responseCallback : GodotEventResponseCallback = () => {};
 
-	#canvas;
 	#justSaved = false;
-	constructor(canvas : HTMLCanvasElement) {
-		this.#canvas = canvas;
+
+	#promises : Map<number, GodotMessageResolver> = new Map();
+	constructor() {
 
 		// TODO: Check only on click through to a new passage, rather than trail update.
 		// Otherwise this gets more hacky.
@@ -35,7 +39,9 @@ export class TwodotBridge {
 		window.addEventListener("passage-navigate", (ev) => {
 			// To avoid Godot loading our state after we just set it:
 			this.#justSaved = true;
-			this.sendGodotEvent("save_state", null);
+			this.sendRecvGodotEvent("save_state", null).then((v) => {
+				setState("godot-state", v);
+			});
 		})
 
 		window.addEventListener("state-change", (ev) => {
@@ -50,12 +56,24 @@ export class TwodotBridge {
 		});
 	}
 
-	registerGodot(godotEventCallback : GodotEventCallback) {
+	registerGodot(godotEventCallback : GodotEventCallback, responseCallback : GodotEventResponseCallback) {
 		this.#godotEventCallback = godotEventCallback;
+		this.#responseCallback = responseCallback;
 	}
 
 	sendGodotEvent(name : String, value : GodotVariant) {
 		this.#godotEventCallback(name, value);
+	}
+	
+	sendRecvGodotEvent(name : String, value : GodotVariant) : Promise<GodotVariant> {
+		let id = this.#promises.size;
+		let promise : Promise<GodotVariant> = new Promise((resolve, reject) => {
+			resolve = resolve;
+			this.#promises.set(id, resolve);
+		});
+
+		this.#responseCallback(name, id, value);
+		return promise;
 	}
 
 	loadGodotState() {
@@ -74,8 +92,13 @@ export class TwodotBridge {
 	 * @param value Event value
 	 */
 	sendTwineEvent(name : String, value : GodotVariant) {
-		if (name === "godotStateUpdate") {
-			setState("godot-state", value);
+	}
+
+	godotReply(to : number, value : GodotVariant) {
+		let val : GodotMessageResolver | undefined = this.#promises.get(to);
+		if (val !== undefined) {
+			val(value);
+			this.#promises.delete(to);
 		}
 	}
 };

@@ -19,7 +19,7 @@ if (canvas instanceof HTMLCanvasElement) {
 	let aspectRatio = 1152/648;
 	canvas.width = window.innerHeight * aspectRatio;
 	canvas.height = window.innerHeight;
-	window.Twodot = new TwodotBridge(canvas);
+	window.Twodot = new TwodotBridge();
 }
 let twodot : TwodotBridge = window.Twodot;
 

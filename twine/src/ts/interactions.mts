@@ -9,7 +9,8 @@ import { DrawError, DrawErrorType, EntityDraw } from './draw.mjs';
 declare global {
 	interface Window { 
 		Vector3: Function,
-		Interactions : Interactions
+		Interactions : Interactions,
+		Entity: Function,
 	}
 }
 
@@ -178,9 +179,58 @@ window.Vector3 = Vector3;
 
 type InteractionType = Vector3 | Array<InteractionType> | string | number | null;
 
+/** Wrapper for a Godot Entity. */
+class Entity {
+	#name : string;
+	#id : number= -1;
+	constructor(name : string) {
+		this.#name = name;
+		twodot.sendRecvGodotEvent("get_entity", this.#name).then((v) => {
+			if (typeof v == "number" && v >= 0) {
+				this.#id = v;
+			} else {
+				throw new Error(`Entity ${this.#name} not found: ${v}`);
+			}
+		});
+	}
+
+	update(properties : Record<string, InteractionType>, functions : Record<string, InteractionType[]>) {
+		let props = {};
+		let funcs = {};
+		for (let prop in properties) {
+			props[prop] = Interactions.interactionStringToVariant(properties[prop]);
+		}
+		for (let f in functions) {
+			funcs[f] = functions[f].map((v) => {
+				return Interactions.interactionStringToVariant(v);
+			});
+		}
+		
+		let v : GodotUpdateEntityValue = {
+			entityName: this.#name,
+			props: props,
+			funcs: funcs
+		};
+		twodot.sendGodotEvent("entity_update", JSON.stringify(v));
+	}
+
+	globalTranslate(v : Vector3) {
+		this.update({}, {
+			global_translate: [v]
+		});
+	}
+
+	set globalRotationDeg(v : Vector3) {
+		this.update({
+			global_rotation_degrees: v
+		}, {});
+	}
+}
+window.Entity = Entity;
+
 class Interactions {
 	#activeFocus : InteractionType = null;
-	#interactionStringToVariant(i : InteractionType) : JSONVariant | null {
+	static interactionStringToVariant(i : InteractionType) : JSONVariant | null {
 		if (typeof i == "string") {
 			return i;
 		} else if (typeof i == "number") {
@@ -189,8 +239,8 @@ class Interactions {
 			return [i.x, i.y, i.z];
 		} else if (i instanceof Array) {
 			return i.map((inner) => {
-				return this.#interactionStringToVariant(inner);
-			}, this);
+				return Interactions.interactionStringToVariant(inner);
+			});
 		} else {
 			return null;
 		}
@@ -207,7 +257,7 @@ class Interactions {
 	}
 
 	cameraFocus(target : InteractionType, permanent : boolean) {
-		let lookAt : JSONVariant = this.#interactionStringToVariant(target);
+		let lookAt : JSONVariant = Interactions.interactionStringToVariant(target);
 
 		if (permanent) {
 			this.#activeFocus = target;
@@ -225,7 +275,7 @@ class Interactions {
 	}
 	
 	moveTo(target : InteractionType) {
-		let moveTo : JSONVariant = this.#interactionStringToVariant(target);
+		let moveTo : JSONVariant = Interactions.interactionStringToVariant(target);
 
 		twodot.sendGodotEvent("entity_update", JSON.stringify({
 			entityName: "Player",
@@ -240,26 +290,6 @@ class Interactions {
 			texturePath: texturePath,
 			entityName: entityName
 		}));
-	}
-
-	updateEntity(entityName: string, properties : Record<string, InteractionType>, functions : Record<string, InteractionType[]>) {
-		let props = {};
-		let funcs = {};
-		for (let prop in properties) {
-			props[prop] = this.#interactionStringToVariant(properties[prop]);
-		}
-		for (let f in functions) {
-			funcs[f] = functions[f].map((v) => {
-				return this.#interactionStringToVariant(v);
-			});
-		}
-		
-		let v : GodotUpdateEntityValue = {
-			entityName: entityName,
-			props: props,
-			funcs: funcs
-		};
-		twodot.sendGodotEvent("entity_update", JSON.stringify(v));
 	}
 }
 

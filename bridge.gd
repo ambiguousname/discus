@@ -1,6 +1,7 @@
 extends Node
 
 var cb : JavaScriptObject;
+var res_cb : JavaScriptObject;
 var js_twodot : JavaScriptObject;
 
 var is_loading : bool = false;
@@ -22,8 +23,9 @@ func _ready() -> void:
 		return; 
 	print("Godot creating JS bridge...");
 	cb = JavaScriptBridge.create_callback(receiveEvent);
+	res_cb = JavaScriptBridge.create_callback(receiveEventWithResponse);
 	js_twodot = JavaScriptBridge.get_interface("Twodot");
-	js_twodot.registerGodot(cb);
+	js_twodot.registerGodot(cb, res_cb);
 
 var entities : Dictionary[String, Entity];
 func register_entity(e : Entity):
@@ -36,11 +38,23 @@ func register_entity_creator(e : EntityCreator):
 func sendEvent(event_name : String, event_value : Variant):
 	js_twodot.sendTwineEvent(event_name, event_value);
 
+func receiveEventWithResponse(args : Array):
+	if args.size() != 3:
+		printerr("Expected three arguments: [event name] [response ID] [event value], got ", args);
+	var event_name : String = args[0];
+	var event_value : Variant = args[2];
+	var response_id : int = args[1];
+	var ret = await execute_event(event_name, event_value);
+	js_twodot.godotReply(response_id, ret);
+
 func receiveEvent(args : Array):
 	if args.size() != 2:
 		printerr("Expected two arguments: [event name] [event value], got %s" % args);
 	var event_name : String = args[0];
 	var event_value : Variant = args[1];
+	execute_event(event_name, event_value);
+
+func execute_event(event_name : String, event_value: Variant) -> Variant:
 	match event_name:
 		"entity_update":
 			var update_data : Dictionary = JSON.parse_string(event_value);
@@ -74,15 +88,20 @@ func receiveEvent(args : Array):
 			for e in entities:
 				var entity = entities[e];
 				state[entity.name] = await entity.save_state();
-			_send_state_data(state, func(dat):
-				self.sendEvent("godotStateUpdate", dat);
-			);
+			return _send_state_data(state);
 		"load_state":
 			_load_state(event_value);
 		"save_drawing":
 			save_drawing(JSON.parse_string(event_value));
 		"create_entity":
 			create_entity(JSON.parse_string(event_value));
+		"get_entity":
+			var n = entities.get(event_value);
+			if n == null:
+				return null;
+			else:
+				return n.get_instance_id();
+	return null;
 
 func save_drawing(d : Dictionary):
 	var mime_type = d.get("type");
@@ -113,7 +132,7 @@ func create_entity(d : Dictionary):
 		return;
 	entity_creator.add_sprite_entity(entity_name, texture_path);
 
-func _send_state_data(state : Dictionary, callback : Callable):
+func _send_state_data(state : Dictionary) -> String:
 	var gzip = StreamPeerGZIP.new();
 	gzip.start_compression();
 	gzip.put_data(var_to_bytes(state));
@@ -121,8 +140,9 @@ func _send_state_data(state : Dictionary, callback : Callable):
 	var out : Array = gzip.get_data(gzip.get_available_bytes());
 	if out[0] != OK:
 		printerr("Could not compress data: ", out);
-	callback.call(Marshalls.raw_to_base64(out[1]));
+	var ret = Marshalls.raw_to_base64(out[1]);
 	gzip.clear();
+	return ret;
 
 func _load_state_data(dat : String) -> Dictionary:
 	var gzip = StreamPeerGZIP.new();

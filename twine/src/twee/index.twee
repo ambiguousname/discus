@@ -71,11 +71,9 @@ You move to unlock the door. Not even a second passes before you hear Agamemnon'
 
 :: Anguished Screams
 [JavaScript]
-Interactions.updateEntity("Agamemnon", {
-    global_rotation_degrees: new Vector3(-90, -90, 0),
-}, {
-    global_translate: [new Vector3(0.0, -1.0, 0.0)]
-});
+let ag = new Entity("Agamemnon");
+ag.globalTranslate(new Vector3(0.0, -1.0, 0.0));
+ag.globalRotationDeg =  new Vector3(-90, -90, 0);
 
 [cont]
 "AUGH! OW! AHHH! OUCH! OUCH! OUCH! OUCH! OUCH!" A random smattering of objects can be heard clanging behind you.
