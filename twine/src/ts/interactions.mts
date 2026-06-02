@@ -183,6 +183,8 @@ class Entity {
 		this.#name = name;
 		window.Twodot.sendRecvGodotEvent("get_entity", this.#name).then((v) => {
 			if (typeof v == "number" && v >= 0) {
+				// This should actually be unused LOL,
+				// Instance IDs change with each state load.
 				this.#id = v;
 			} else {
 				throw new Error(`Entity ${this.#name} not found: ${v}`);
