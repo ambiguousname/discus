@@ -32,7 +32,6 @@ export class TwodotBridge {
 
 	#promises : Map<number, GodotMessageResolver> = new Map();
 	constructor() {
-
 		// TODO: Check only on click through to a new passage, rather than trail update.
 		// Otherwise this gets more hacky.
 

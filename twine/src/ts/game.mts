@@ -5,10 +5,12 @@ import "./draw.mjs";
 import "./interactions.mjs";
 import "./formatting.mjs";
 import { warn } from "chapbook/src/runtime/logger";
+import { Interactions } from "./interactions.mjs";
 
 declare global {
 	interface Window {
 		Twodot : TwodotBridge,
+		Interactions : Interactions,
 		Engine : any
 	}
 }
@@ -20,6 +22,7 @@ if (canvas instanceof HTMLCanvasElement) {
 	canvas.width = window.innerHeight * aspectRatio;
 	canvas.height = window.innerHeight;
 	window.Twodot = new TwodotBridge();
+	window.Interactions = new Interactions();
 }
 let twodot : TwodotBridge = window.Twodot;
 

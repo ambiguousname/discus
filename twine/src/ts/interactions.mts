@@ -9,7 +9,6 @@ import { DrawError, DrawErrorType, EntityDraw } from './draw.mjs';
 declare global {
 	interface Window { 
 		Vector3: Function,
-		Interactions : Interactions,
 		Entity: Function,
 	}
 }
@@ -143,6 +142,7 @@ export class SubmitPassageLink extends PassageLink {
 				if (propName === null) {
 					console.error(`Property name for ${inputName} is null.`);
 				} else {
+					let entity = new Entity(inputName);
 					switch (input.type) {
 						case "checkbox":
 							props[propName] = input.checked;
@@ -153,12 +153,8 @@ export class SubmitPassageLink extends PassageLink {
 							props[propName] = input.value;
 							break;
 					}
+					entity.update(props, {});
 				}
-				let update : GodotUpdateEntityValue = {
-					entityName: inputName,
-					props: props,
-				};
-				twodot.sendGodotEvent("entity_update", JSON.stringify(update));
 			}
 		}
 	}
@@ -185,7 +181,7 @@ class Entity {
 	#id : number= -1;
 	constructor(name : string) {
 		this.#name = name;
-		twodot.sendRecvGodotEvent("get_entity", this.#name).then((v) => {
+		window.Twodot.sendRecvGodotEvent("get_entity", this.#name).then((v) => {
 			if (typeof v == "number" && v >= 0) {
 				this.#id = v;
 			} else {
@@ -228,8 +224,10 @@ class Entity {
 }
 window.Entity = Entity;
 
-class Interactions {
+export class Interactions {
 	#activeFocus : InteractionType = null;
+	#player : Entity | null = new Entity("Player");
+
 	static interactionStringToVariant(i : InteractionType) : JSONVariant | null {
 		if (typeof i == "string") {
 			return i;
@@ -257,32 +255,21 @@ class Interactions {
 	}
 
 	cameraFocus(target : InteractionType, permanent : boolean) {
-		let lookAt : JSONVariant = Interactions.interactionStringToVariant(target);
-
 		if (permanent) {
 			this.#activeFocus = target;
 		}
-
-		twodot.sendGodotEvent("entity_update", JSON.stringify({
-			entityName: "Player",
-			funcs: {
-				"set_look_at": [lookAt]
-			}
-		}));
+		this.#player?.update({}, {
+			set_look_at: [target]
+		})
 	}
 	resetCameraFocus() {
 		this.cameraFocus(this.#activeFocus, true);
 	}
 	
 	moveTo(target : InteractionType) {
-		let moveTo : JSONVariant = Interactions.interactionStringToVariant(target);
-
-		twodot.sendGodotEvent("entity_update", JSON.stringify({
-			entityName: "Player",
-			funcs: {
-				"set_move_target": [moveTo]
-			}
-		}));
+		this.#player?.update({}, {
+			set_move_target: [target]
+		});
 	}
 
 	createEntity(entityName: string, texturePath: string) {
@@ -292,5 +279,3 @@ class Interactions {
 		}));
 	}
 }
-
-window.Interactions = new Interactions();
