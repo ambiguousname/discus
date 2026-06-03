@@ -170,6 +170,26 @@ class Vector3 {
 		this.y = y;
 		this.z = z;
 	}
+
+	add(other : Vector3) : Vector3 {
+		return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
+	}
+
+	sub(other : Vector3) : Vector3 {
+		return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+	}
+
+	mul(scalar : number) : Vector3 {
+		return new Vector3(this.x * scalar, this.y * scalar, this.z * scalar);
+	}
+
+	mulPairwise(other : Vector3) : Vector3 {
+		return new Vector3(this.x * other.x, this.y * other.y, this.z * other.z);
+	}
+
+	dot(other : Vector3) : number {
+		return this.x * other.x + this.y * other.y + this.z * other.z;
+	}
 }
 window.Vector3 = Vector3;
 

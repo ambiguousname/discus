@@ -114,7 +114,8 @@ Draw a Chef.
 [JavaScript]
 Interactions.createEntity("Chef", "user://chef.svg").then((chef) => {
     let ag = new Entity("Agamemnon");
-    ag.globalPosition.then((gp) => { chef.globalPosition = gp; ag.queueFree(); });
+    ag.globalPosition.then((gp) => { chef.globalPosition = gp.add(new Vector3(0, 1.0, 0)); ag.queueFree(); });
+    chef.globalRotationDeg = new Vector3(0, 90, 0);
     Interactions.cameraFocus(chef, true);
 });
 
