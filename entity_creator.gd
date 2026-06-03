@@ -23,3 +23,5 @@ func add_sprite_entity(entity_name : String, texture_path : String):
 	entity.set_script(entity_script);
 	entity.set(&"owner_path", self.get_path());
 	self.add_child(entity);
+	# Wait for the entity to finish setting up:
+	await get_tree().process_frame;

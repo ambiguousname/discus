@@ -173,7 +173,7 @@ class Vector3 {
 }
 window.Vector3 = Vector3;
 
-type InteractionType = Vector3 | Array<InteractionType> | string | number | null;
+type InteractionType = Vector3 | Array<InteractionType> | string | number | Entity | null;
 
 /** Wrapper for a Godot Entity. */
 class Entity {
@@ -190,6 +190,10 @@ class Entity {
 				throw new Error(`Entity ${this.#name} not found: ${v}`);
 			}
 		});
+	}
+
+	get name() {
+		return this.#name;
 	}
 
 	update(properties : Record<string, InteractionType>, functions : Record<string, InteractionType[]>) {
@@ -247,6 +251,10 @@ class Entity {
 		});
 	}
 
+	queueFree() {
+		twodot.sendGodotEvent("free_entity", this.#name);
+	}
+
 	get globalPosition() : Promise<Vector3 | null> {
 		return this.get("global_position").then((out) => {
 			if (typeof out === "string") {
@@ -279,6 +287,8 @@ export class Interactions {
 			return i.map((inner) => {
 				return Interactions.interactionStringToVariant(inner);
 			});
+		} else if (i instanceof Entity) {
+			return `e:${i.name}`;
 		} else {
 			return null;
 		}
@@ -327,10 +337,10 @@ export class Interactions {
 		});
 	}
 
-	createEntity(entityName: string, texturePath: string) {
-		twodot.sendGodotEvent("create_entity", JSON.stringify({
+	async createEntity(entityName: string, texturePath: string) : Promise<Entity> {
+		return twodot.sendRecvGodotEvent("create_entity", JSON.stringify({
 			texturePath: texturePath,
 			entityName: entityName
-		}));
+		})).then((v) => { return new Entity(entityName); });
 	}
 }

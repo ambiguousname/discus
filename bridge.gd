@@ -94,7 +94,8 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 		"save_drawing":
 			save_drawing(JSON.parse_string(event_value));
 		"create_entity":
-			create_entity(JSON.parse_string(event_value));
+			# Do not return until the entity has been created.
+			await create_entity(JSON.parse_string(event_value));
 		"get_entity":
 			var n = entities.get(event_value);
 			if n == null:
@@ -109,6 +110,13 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 				return JSON.stringify(e.save_state());
 			else:
 				return null;
+		"free_entity":
+			var e = entities.get(event_value);
+			if e is Entity:
+				e.queue_free();
+				entities.erase(event_value);
+			else:
+				printerr("Could not get entity %s: " % event_value, e);
 	return null;
 
 func get_entity_prop(d : Dictionary):
@@ -151,7 +159,8 @@ func create_entity(d : Dictionary):
 	if not (texture_path is String):
 		printerr("Texture path is not String for %s: " % entity_name, texture_path);
 		return;
-	entity_creator.add_sprite_entity(entity_name, texture_path);
+	# Let the entity finish creation:
+	await entity_creator.add_sprite_entity(entity_name, texture_path);
 
 func _send_state_data(state : Dictionary) -> String:
 	var gzip = StreamPeerGZIP.new();

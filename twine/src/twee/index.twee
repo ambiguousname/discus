@@ -112,7 +112,11 @@ Draw a Chef.
 
 :: Drawn Chef
 [JavaScript]
-Interactions.createEntity("Chef", "user://chef.svg");
+Interactions.createEntity("Chef", "user://chef.svg").then((chef) => {
+    let ag = new Entity("Agamemnon");
+    ag.globalPosition.then((gp) => { chef.globalPosition = gp; ag.queueFree(); });
+    Interactions.cameraFocus(chef, true);
+});
 
 [cont]
 Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step right up! Meet the Postmodern Prometheus. Stare in dumbstruck awe as they bring life to that which is dead! Flesh becomes substance, substance flesh. Agamemnon's body pulled and twisted into life anew, creating this being of your choice.
