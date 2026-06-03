@@ -20,7 +20,7 @@ func _ready() -> void:
 	if owner != null:
 		owner_path = owner.get_path();
 
-func variant_to_json(v : Variant) -> Variant:
+static func variant_to_json(v : Variant) -> Variant:
 	if v is Node:
 		return NodePath(v.get_path());
 	elif v is Resource:

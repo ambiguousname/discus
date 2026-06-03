@@ -227,6 +227,35 @@ class Entity {
 		});
 	}
 
+	set globalPosition(v : Vector3) {
+		this.update({
+			global_position: v
+		}, {});
+	}
+
+	get(propName : string) : Promise<JSONVariant> {
+		return twodot.sendRecvGodotEvent("get_entity_prop", JSON.stringify({
+			entityName: this.#name,
+			propName: propName,
+		})).then((v) => {
+			if (typeof v === "string") {
+				return JSON.parse(v);
+			} else {
+				console.error("Could not parse property: ", v);
+				return null;
+			}
+		});
+	}
+
+	get globalPosition() : Promise<Vector3 | null> {
+		return this.get("global_position").then((out) => {
+			if (typeof out === "string") {
+				return Interactions.JSONVariantToVector3(out);
+			}
+			return null;
+		});
+	}
+
 	set globalRotationDeg(v : Vector3) {
 		this.update({
 			global_rotation_degrees: v
@@ -251,6 +280,21 @@ export class Interactions {
 				return Interactions.interactionStringToVariant(inner);
 			});
 		} else {
+			return null;
+		}
+	}
+
+	static JSONVariantToVector3(j : JSONVariant) : Vector3 | null {
+		if (typeof j == "string" && j[0] === "(" && j[j.length - 1] === ")") {
+			let splits = j.substring(1, j.length - 1).split(",");
+			if (splits.length === 3) {
+				return new Vector3(parseFloat(splits[0]), parseFloat(splits[1]), parseFloat(splits[2]));
+			} else {
+				console.error("Expected length 3, got: ", splits);
+				return null;
+			}
+		} else {
+			console.error("Could not convert to Vector3: ", j);
 			return null;
 		}
 	}

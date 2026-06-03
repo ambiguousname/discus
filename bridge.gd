@@ -101,6 +101,8 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 				return null;
 			else:
 				return n.get_instance_id();
+		"get_entity_prop":
+			return get_entity_prop(JSON.parse_string(event_value));
 		"get_entity_state":
 			var e = entities.get(event_value);
 			if e is Entity:
@@ -108,6 +110,19 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 			else:
 				return null;
 	return null;
+
+func get_entity_prop(d : Dictionary):
+	var entity_name = d.get("entityName");
+	if entity_name is not String:
+		printerr("entityName is not string: ", entity_name);
+		return null;
+	if not entities.has(entity_name):
+		printerr("Error getting prop of %s: entity does not exist in registered entities." % entity_name);
+		return null;
+	var prop_name = d.get("propName");
+	if prop_name is not String:
+		printerr("Error getting prop of %s: propName is not string: " % entity_name, prop_name);
+	return JSON.stringify(Entity.variant_to_json(entities.get(entity_name).get(prop_name)));
 
 func save_drawing(d : Dictionary):
 	var mime_type = d.get("type");
