@@ -4,13 +4,18 @@ class_name Entity extends Node3D
 @export var is_const : bool = false;
 var is_loading : bool = false;
 signal loading_done();
-## Used by Twine.
-@export var entity_name : String = "Unknown";
+
+## The scene with which to base the entity loading from. Can be "null" if the entity is const.
+@export var scene : PackedScene = null;
 
 ## As a fallback for non-const nodes.
 ## Godot doesn't seem to like setting the value of `owner` in some cases,
 ## so this is a contingency for that case.
 var owner_path : NodePath;
+
+## Helps the [Player] determine what node to look at.
+func to_look_at() -> Node3D:
+	return self;
 
 func _ready() -> void:
 	# Wait until our name is registered:
@@ -51,7 +56,6 @@ func save_state() -> Dictionary:
 		else:
 			property = variant_to_json(property);
 		state_dict[prop_name] = property;
-	state_dict["ClassName"] = self.get_class();
 	if state_dict["owner"] == null:
 		state_dict["owner"] = owner_path;
 	return state_dict;

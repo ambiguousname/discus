@@ -3,14 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://s8c2hlbj8j56" path="res://level.blend" id="1_ots34"]
 [ext_resource type="Shader" uid="uid://dmwswtj4b8uyr" path="res://shading/sky.gdshader" id="2_qn1rc"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="3_1n0d2"]
-[ext_resource type="Script" uid="uid://b0kl0lg35cg00" path="res://player.gd" id="3_4a3qj"]
+[ext_resource type="Script" uid="uid://b0kl0lg35cg00" path="res://entities/player.gd" id="3_4a3qj"]
 [ext_resource type="NavigationMesh" uid="uid://7amljq1dgkpe" path="res://navigation_mesh.tres" id="3_pob1m"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_oiuna"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_4a3qj"]
 [ext_resource type="Texture2D" uid="uid://ov6kh1oivles" path="res://assets/images/Agamemnon.svg" id="7_g38d0"]
-[ext_resource type="Script" uid="uid://d3uqysmlxs016" path="res://entity_creator.gd" id="8_da165"]
+[ext_resource type="Script" uid="uid://d3uqysmlxs016" path="res://entities/entity_creator.gd" id="8_da165"]
 [ext_resource type="Script" uid="uid://4onexhlhw6fa" path="res://clip_plane.gd" id="9_gophc"]
-[ext_resource type="Script" uid="uid://magtjcjmaat3" path="res://entity.gd" id="10_p0nl4"]
+[ext_resource type="PackedScene" uid="uid://biffww6vr16o" path="res://entities/character.tscn" id="9_r8ukj"]
+[ext_resource type="Script" uid="uid://magtjcjmaat3" path="res://entities/entity.gd" id="10_p0nl4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1n0d2"]
 shader = ExtResource("2_qn1rc")
@@ -79,10 +80,11 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 [node name="EntityCreator" type="Node3D" parent="." unique_id=449722520]
 script = ExtResource("8_da165")
 
-[node name="Agamemnon" type="Sprite3D" parent="." unique_id=847927874]
-transform = Transform3D(-0.39733306, 0, -0.046113584, 0, 0.4, 0, 0.046113584, 0, -0.39733306, 0.4158198, 1.2750063, -23.20139)
+[node name="Agamemnon" parent="." unique_id=2091467841 instance=ExtResource("9_r8ukj")]
+transform = Transform3D(-0.98875517, 0, 0.14953533, 0, 1, 0, -0.14953533, 0, -0.98875517, 0.416, 0.1333125, -23.201)
+character_name = "Agamemnon"
 texture = ExtResource("7_g38d0")
-script = ExtResource("10_p0nl4")
+texture_scale = 0.4
 
 [node name="ClipPlane" type="Area3D" parent="." unique_id=1355222674]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.343565, 0)

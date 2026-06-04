@@ -2,10 +2,9 @@ import "chapbook/src/runtime";
 import "../../../build/Discus";
 import { TwodotBridge } from "./bridge.mjs";
 import "./draw.mjs";
-import "./interactions.mjs";
 import "./formatting.mjs";
+import { Interactions } from "./interactions/index.mjs";
 import { warn } from "chapbook/src/runtime/logger";
-import { Interactions } from "./interactions.mjs";
 
 declare global {
 	interface Window {

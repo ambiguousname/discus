@@ -71,8 +71,7 @@ You move to unlock the door. Not even a second passes before you hear Agamemnon'
 
 :: Anguished Screams
 [JavaScript]
-let ag = new Entity("Agamemnon");
-ag.globalTranslate(new Vector3(0.0, -1.0, 0.0));
+let ag = new Character("Agamemnon");
 ag.globalRotationDeg =  new Vector3(-90, -90, 0);
 
 [cont]
@@ -112,7 +111,7 @@ Draw a Chef.
 
 :: Drawn Chef
 [JavaScript]
-Interactions.createEntity("Chef", "user://chef.svg").then((chef) => {
+Interactions.createCustomCharacter("Chef", "user://chef.svg").then((chef) => {
     let ag = new Entity("Agamemnon");
     ag.globalPosition.then((gp) => { chef.globalPosition = gp.add(new Vector3(0, 1.0, 0)); ag.queueFree(); });
     chef.globalRotationDeg = new Vector3(0, 90, 0);
@@ -125,7 +124,7 @@ Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step ri
 What will you call them?
 
 <form>
-<input name="Chef" godot-prop-name="entity_name" required/>
+<input name="Chef" godot-prop-name="character_name" required/>
 <br/>
 <submit-passage-link class="link" to="Named Chef">"Donezo."</submit-passage-link>
 </form>
@@ -137,6 +136,14 @@ actorOneIntro (actorOne.personality === "hothead"): `${capitalize(actorOne.prono
 actorOneIntro (actorOne.personality === "goth"): `${capitalize(actorOne.pronouns.subject)} makes grim eye contact (or ${actorOne.pronouns.object} equivalent) with you. "You may refer to me colloquially as ${actorOne.name}. As long as you are not affiliated with any of my many enemies, I shall prove to be an adequate Chef."`
 actorOneIntro (actorOne.personality === "nerd"): `${capitalize(actorOne.pronouns.subject)} regards you with some disdain. "Greetings and salutations. I am ${actorOne.name}, your new Chef, and I think we will get along fine."`
 --
+
+[JavaScript]
+let chef = new Entity("Chef");
+chef.characterName.then((n) => {
+    
+});
+
+[cont]
 
 {actorOneIntro}
 
