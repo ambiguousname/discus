@@ -83,7 +83,7 @@ All is quite for a half second, until you hear the screams again. "OUCH! OUCH! O
 You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.", lookAt: "/root/Start/Agamemnon", moveTo: "/root/Start/Agamemnon"}
 
 :: Dying Agamemnon
-"Oh. I am dying. How ironic, especially since my forebears invented Philosophy."
+"Oh. I am dying. If only I had bothered to learn anything about Ancient Greece so I could make proper payment to... I want to say Charybdis?"
 
 [["So sorry to hear."->Sorry To Hear]]
 
@@ -95,10 +95,10 @@ You hear a {glink: "Dying Agamemnon", label: "long groan coming from behind you.
 "Bleh. Bleh. Blah. Bleh." [[Agamemnon dies->Draw Chef]].
 
 :: Mycenaean
-"I just forgot..." Agamemnon gasps with his last breaths, "I forgot to tell you how to read Linear A..." [[Agamemnon dies->Draw Chef]].
+"Oh!" Agamemnon smacks a dying limb against his forehead, "The payroll system was only localized for Linear A-" he takes a full minute to hacck up a lung. It's veiny and a little too full of itself. And blood. "I also couldn't figure out how to switch off of UTF 9." [[Agamemnon dies->Draw Chef]].
 
 :: Out the Airlock
-"Could you shoot me out with a cool parrot or some kind of owl? I must pay tribute to the gods..." [[Agamemnon dies->Draw Chef]].
+"Gag me with a spoon, sweet summer's child." [[Agamemnon dies->Draw Chef]].
 
 :: Draw Chef
 The substance holding Agamemnon together unravels into a loose collection of strands, tiny white threads. You reach to gather each. The torch is passed along to you, with the body of its proprietor. This is your restaurant, now.
