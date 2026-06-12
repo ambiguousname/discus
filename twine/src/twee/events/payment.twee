@@ -1,0 +1,55 @@
+:: Payment_Enter
+
+You catch {actorOne.name} having a conversation with a customer, bobbing thoughtfully as if in thought. You wish you could make out whatever it was they were saying, so you {glink: "Payment_Closer", label: "move closer to the conversation", moveTo: `e:${actorOne.entity}`}.
+
+:: Payment_Closer
+actorOnePayment: "He had a question about, um, paying?"
+actorOnePayment (personality === "stoic"): "I am attempting to ring him up, but need some help."
+actorOnePayment (personality === "hothead"): "I've been <i>trying</i> to figure out how to take payment."
+actorOnePayment (personality === "goth"): "We have been discussing our mutual interest in settling the bill, as it were."
+actorOnePayment (personality === "nerd"): "I can't seem to figure out how to get him to pay for his meal."
+--
+"Boss!" {actorOne.name} reaches out to pull you in. "This is Fromage Vorkosigan. {actorOnePayment}"
+
+Fromage curtsies respectfully. "Yes, I was wondering when you'd be able to ring me up."
+
+[["We accept money here?"->Payment_Money]]
+[["Of course, let me get the point-of-sale thingy."->Payment_Bring]]
+
+:: Payment_Money
+actorOneThink: `"I think so. I think that's supposed to happen." ${actorOne.name} shifts ${actorOne.pronouns.dependent} weight around with some uncertainty. "I think there's a tablet we can use, I'll go grab that from... somewhere else."`
+actorOneThink (personality === "stoic"): `"To be quite frank," ${actorOne.name} says while staring at your feet quite intently, "I'm not sure the method of sale in this system."`
+actorOneThink (personality === "goth"): `${actorOne.name} stares into your eyes, quizzically. "What is money? I merely bargain for what lies in a person's heart."`
+--
+{actorOneThink} {actorOne.name} runs off to grab the point-of-sale tablet.
+
+It's you and the Vorkosigan, facing down each other. He fans out a collection of shiny golden coins. "You definitely don't want to know where these bad boys came from."
+
+[["Where did they come from?"->Payment_Coins]]
+[["Let's just focus on settling the bill."->Payment_Settle]]
+
+:: Payment_Bring
+You're not sure exactly where a point-of-sale tablet might be, but you have a pretty strong hunch.
+
+You walk over to where the corpse of Agamemnon used to be, and sure enough, there's a tablet that you didn't notice before. It's a wonder with all these folks stamping around all over the place that it didn't get damaged.
+
+[["Time to head back."->Payment_Back]]
+
+:: Payment_Back
+You're heading back, point-of-sale tablet in hand.
+
+<!-- TODO: Finish this, head to Payment_Retrieved -->
+
+:: Payment_Coins
+<!-- TODO: I think a cut-off midway through would be funnier -->
+"Well." What a fool are you, to ask a man of such devious delights. He is sporting the most stupid grin as he draws in a large breath to unload a cavelcade of words in your direction. "Last month, the Crimson Marauders kidnapped the son of the President of Nueva New Mombasa 32nd District's School Board. Nueva New Mombasa just voted to slash the district's budget in half," Vorkosigan draws his arms in an X pattern above his chest, "so any ransom payment would be out of the question." He unfurls his crossed arms with a flourish. "The parents unanimously voted to offer up their auction proceeds, along with the kids' art projects, as a ransom. Of those art projects, one class of kids makes..." He rattles the coins a little closer to your face, "these gold-plated platinum coins. The art projects and the proceeds aren't enough to match what the Crimson Marauders are asking for. So," He draws the coins closer, stepping further into your personal space, "I realize the Nomadic Death Fleet of Silan V needs platinum for their Fomorian warships, and that's when I plan-" He pauses for effect: twisting his head slyly, raising two index fingers, and placing thumbs parallel to the floor to frame you in the center of his vision. "-a double cross."
+
+"Boss! I've got the tablet." {actorOne.name} hands you the point-of-sale tablet.
+
+[["Finally."->Payment_Retrieved]]
+[["Oh, okay."->Payment_Retrieved]]
+
+:: Payment_Settle
+
+
+:: Payment_Retrieved
