@@ -252,9 +252,9 @@ func _load_state(state_data : String):
 		if entity_name in entities:
 			entities[entity_name].load_state.call_deferred(entity_data, get_tree().root);
 		else:
-			var scene = entity_data.get("scene");
-			if scene == null:
-				printerr("Could not find scene to initialize %s" % entity_name);
+			var scene = Entity.extract_resource_path(entity_data.get("scene"));
+			if scene is not PackedScene:
+				printerr("Could not find scene to initialize %s: " % entity_name, scene);
 				continue;
 			
 			var obj : Object = scene.instantiate();

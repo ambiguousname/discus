@@ -60,6 +60,15 @@ func save_state() -> Dictionary:
 		state_dict["owner"] = owner_path;
 	return state_dict;
 
+static func extract_resource_path(prop_value : String) -> Resource:
+	if prop_value.begins_with("resource_path:"):
+		var resource_path = prop_value.substr(14);
+		if not ResourceLoader.exists(resource_path):
+			return null;
+		else:
+			return ResourceLoader.load(resource_path);
+	return null;
+
 func load_state(state_dict : Dictionary, root : Node) -> Error:
 	is_loading = true;
 	if "owner" in state_dict && not is_const && state_dict["owner"] is NodePath:
@@ -83,13 +92,12 @@ func load_state(state_dict : Dictionary, root : Node) -> Error:
 	
 	for p in state_dict:
 		var prop_value : Variant = state_dict[p];
-		if prop_value is String:
-			if prop_value.begins_with("resource_path:"):
-				var resource_path = prop_value.substr(14);
-				if not ResourceLoader.exists(resource_path):
-					printerr("Failed to set %s: Resource path %s does not exist" % [p, resource_path]);
-				else:
-					prop_value = ResourceLoader.load(resource_path);
+		if prop_value is String && prop_value.begins_with("resource_path:"):
+			var pth = prop_value;
+			prop_value = extract_resource_path(pth);
+			if prop_value == null:
+				printerr("Failed to set %s: Resource path %s does not exist" % [p, pth]);
+				continue;
 		
 		var prop_type = typeof(self.get(p));
 		match prop_type:
