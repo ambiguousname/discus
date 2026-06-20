@@ -53,7 +53,7 @@ export class EntityDraw extends HTMLElement {
 		this.#editor = new Editor(this, settings);
 		this.#editor.dispatch(this.#editor.setBackgroundStyle({
 			color: Color4.ofRGBA(0, 0, 0, 1),
-			type: BackgroundComponentBackgroundType.SolidColor,
+			type: BackgroundComponentBackgroundType.Grid,
 			autoresize: true 
 		}), false);
 
