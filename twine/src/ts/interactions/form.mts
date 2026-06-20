@@ -56,21 +56,21 @@ export class SubmitPassageLink extends PassageLink {
 				}
 				if (child instanceof HTMLInputElement) {
 					if (child.required && child.value === "") {
-						throw new Error("You did not fill in all required information.");
+						throw new Error("You did not fill in the required fields, ya bourgeois barnacle.");
 					}
 					inputs[child.id] = child;
 				}
 			} catch (err) {
 				ev.preventDefault();
 				ev.stopPropagation();
-				let errorMsg : string = "Undefined error.";
+				let errorMsg : string = "*Shrugs cutely*";
 				if (err instanceof DrawError) {
 					switch (err.type) {
 						case DrawErrorType.EMPTY:
-							errorMsg = "Creation flows from substance. You cannot create from nothing!";
+							errorMsg = "You gotta draw something, you detrital debutante!";
 							break;
 						default:
-							errorMsg = "I cannot determine the source of your problems. Please contact the creator of your reality at your soonest convenience.";
+							errorMsg = "Something went wrong with your canvas. Make no sudden movements and pray to the Spider Lord.";
 							break;
 					}
 				} else if (err instanceof Error) {
