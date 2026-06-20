@@ -143,15 +143,18 @@ export class Interactions {
 		}
 	}
 
-	async createCustomCharacter(entityName: string, imagePath: string,  scale : number = 2.5) : Promise<Character> {
+	// TODO: Scale based on SVG dimensions.
+	async createCustomCharacter(entityName: string, imagePath: string, textureScale : number = 2.5, spriteScale : number = 0.2) : Promise<Character> {
 		let texturePath = `user://${entityName}_character_texture.tres`;
 		twodot.sendGodotEvent("create_texture", JSON.stringify({
 			img: imagePath,
 			type: "image/svg+xml",
 			texturePath: texturePath,
-			scale: scale,
+			scale: textureScale,
 		}));
-		return this.createCharacter(entityName, texturePath);
+		let c = await this.createCharacter(entityName, texturePath);
+		c.set("texture_scale", spriteScale);
+		return c;
 	}
 
 	async createCharacter(entityName: string, texturePath: string) : Promise<Character> {
