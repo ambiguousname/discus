@@ -92,7 +92,7 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 		"load_state":
 			_load_state(event_value);
 		"save_drawing":
-			save_drawing(JSON.parse_string(event_value));
+			return save_drawing(JSON.parse_string(event_value));
 		"create_texture":
 			create_texture(JSON.parse_string(event_value));
 		"download_file":
@@ -151,23 +151,24 @@ func get_entity_prop(d : Dictionary):
 		printerr("Error getting prop of %s: propName is not string: " % entity_name, prop_name);
 	return JSON.stringify(Entity.variant_to_json(entities.get(entity_name).get(prop_name)));
 
-func save_drawing(d : Dictionary):
+func save_drawing(d : Dictionary) -> Variant:
 	var mime_type = d.get("type");
 	if mime_type != "image/svg+xml":
 		printerr("Mime type %s not supported." % mime_type);
-		return;
+		return null;
 	var img_name = d.get("name");
 	if !(img_name is String):
 		printerr("Image name should be a string: ", img_name);
-		return; 
+		return null;
 	var svg_str = d.get("img");
 	if svg_str is String:
 		var f = FileAccess.open("user://%s.svg" % img_name, FileAccess.WRITE);
 		f.store_string(svg_str);
 		f.close();
-		return;
+		return img_name;
 	else:
 		printerr("SVG is not a string: ", svg_str);
+		return null;
 
 func create_texture(d : Dictionary):
 	var img_path = d.get("img");
@@ -182,6 +183,9 @@ func create_texture(d : Dictionary):
 	
 	var texture_path = d.get("texturePath");
 	if texture_path is String:
+		if not FileAccess.file_exists(img_path):
+			printerr("File %s does not exist." % img_path);
+			return;
 		var svg = FileAccess.get_file_as_bytes(img_path);
 		var img = Image.new();
 		var scale = d.get("scale", 1.0);

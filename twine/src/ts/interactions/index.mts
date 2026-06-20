@@ -1,12 +1,13 @@
 import { Entity, Vector3 } from './entity.mjs';
 import "./character.mjs";
+import "./form.mjs";
 
 import { add as addInsert } from 'chapbook/src/runtime/template/inserts';
+import { add as addModifier } from 'chapbook/src/runtime/template/modifiers';
 import { htmlify } from 'chapbook/src/runtime/util';
 import { twodot } from '../game.mjs';
 import { JSONVariant } from '../bridge.mjs';
-import { PassageLink } from 'chapbook/src/runtime/template/custom-elements/passage-link';
-import { DrawError, DrawErrorType, EntityDraw } from '../draw.mjs';
+import { Character } from './character.mjs';
 
 addInsert({
 	match: /glink/i,
@@ -50,111 +51,6 @@ addInsert({
 		]);
 	}
 });
-
-export class SubmitPassageLink extends PassageLink {
-	#parent : HTMLFormElement;
-	constructor() {
-		super();
-		if (this.parentElement instanceof HTMLFormElement) {
-			this.#parent = this.parentElement;
-		} else {
-			throw Error("Could not find <form> parent.");
-		}
-		this.addEventListener("click", this.submitPassageForm.bind(this), {
-			capture: true
-		});
-	}
-
-	async submitPassageForm(ev : Event) {
-		document.getElementById("draw-error")?.remove();
-
-		let inputs : Record<string, any> = {};
-
-		for (let child of this.#parent.children) {
-			if (child === this) {
-				continue;
-			}
-			try {
-				if (child instanceof EntityDraw) {
-					if (child.hasAttribute("required")) {
-						child.checkValidation();
-					}
-					let name = child.getAttribute("name");
-					if (name !== null){
-						inputs[name] = child;
-					}
-				}
-				if (child instanceof HTMLInputElement) {
-					if (child.required && child.value === "") {
-						throw new Error("You did not fill in all the required information, young child.");
-					}
-					inputs[child.name] = child;
-				}
-			} catch (err) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				let errorMsg : string = "Undefined error.";
-				if (err instanceof DrawError) {
-					switch (err.type) {
-						case DrawErrorType.EMPTY:
-							errorMsg = "Creation flows from substance. You cannot create from nothing!";
-							break;
-						default:
-							errorMsg = "I cannot determine the source of your problems. Please contact the creator of your reality at your soonest convenience.";
-							break;
-					}
-				} else if (err instanceof Error) {
-					errorMsg = err.message;
-				}
-				let errorText = document.createElement("div");
-
-				errorText.innerHTML = `<p>You hear your grandfather's words in your mind: "${errorMsg}"</p> <p>Surprised by his sudden outburst, you take a minute to compose yourself.</p>`;
-				errorText.id = "draw-error";
-
-				this.#parent.insertBefore(errorText, this);
-			}
-		}
-
-		for (let inputName in inputs) {
-			let input = inputs[inputName];
-			if (input instanceof EntityDraw) {
-				input.finish().then((svg) => {
-					for (let child of svg.getElementsByClassName("js-draw-image-background")) {
-						child.remove();
-					}
-					
-					let serializer = new XMLSerializer();
-					let str = serializer.serializeToString(svg);
-					twodot.sendGodotEvent("save_drawing", JSON.stringify({
-						img: str,
-						type: "image/svg+xml",
-						name: inputName,
-					}));
-				});
-			} else if (input instanceof HTMLInputElement) {
-				let props = {};
-				let propName = input.getAttribute("godot-prop-name");
-				if (propName === null) {
-					console.error(`Property name for ${inputName} is null.`);
-				} else {
-					let entity = new Entity(inputName);
-					switch (input.type) {
-						case "checkbox":
-							props[propName] = input.checked;
-							break;
-						case "number":
-							props[propName] = parseFloat(input.value);
-						default:
-							props[propName] = input.value;
-							break;
-					}
-					entity.update(props, {});
-				}
-			}
-		}
-	}
-}
-window.customElements.define('submit-passage-link', SubmitPassageLink);
 
 export type InteractionType = Vector3 | Array<InteractionType> | string | number | Entity | null;
 
@@ -227,7 +123,27 @@ export class Interactions {
 		});
 	}
 
-	async createCustomCharacter(entityName: string, imagePath: string,  scale : number = 1.0) : Promise<Entity> {
+	/** Given a {@link SVGElement} from {@link EntityDraw}, process and save to Godot's file system. */
+	async saveSVG(imgName : string, svg : SVGElement) : Promise<string> {
+		for (let child of svg.getElementsByClassName("js-draw-image-background")) {
+			child.remove();
+		}
+		
+		let serializer = new XMLSerializer();
+		let str = serializer.serializeToString(svg);
+		let result = await twodot.sendRecvGodotEvent("save_drawing", JSON.stringify({
+			img: str,
+			type: "image/svg+xml",
+			name: imgName,
+		}));
+		if (typeof result === "string") {
+			return result;
+		} else {
+			throw new Error(`Unable to save SVG: ${result}`);
+		}
+	}
+
+	async createCustomCharacter(entityName: string, imagePath: string,  scale : number = 2.5) : Promise<Character> {
 		let texturePath = `user://${entityName}_character_texture.tres`;
 		twodot.sendGodotEvent("create_texture", JSON.stringify({
 			img: imagePath,
@@ -238,11 +154,21 @@ export class Interactions {
 		return this.createCharacter(entityName, texturePath);
 	}
 
-	async createCharacter(entityName: string, texturePath: string) : Promise<Entity> {
+	async createCharacter(entityName: string, texturePath: string) : Promise<Character> {
 		return twodot.sendRecvGodotEvent("create_entity", JSON.stringify({
 			texturePath: texturePath,
 			entityName: entityName,
 			entityType: "character"
-		})).then((v) => { return new Entity(entityName); });
+		})).then((v) => { return new Character(entityName); });
 	}
 }
+
+addModifier({
+	match: /OnSubmit/i,
+	processRaw(output, options) {
+		let text = output.text;
+
+
+		output.text = "";
+	},
+});

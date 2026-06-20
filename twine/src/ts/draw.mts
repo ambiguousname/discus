@@ -1,4 +1,4 @@
-import Editor, { AbstractToolbar, BackgroundComponentBackgroundType, Color4, EditorSettings, EraserTool, EraserToolWidget, PanZoomTool, PenTool, PenToolWidget, ToolEnabledGroup } from "js-draw";
+import Editor, { AbstractToolbar, BackgroundComponentBackgroundType, Color4, EditorSettings, EraserTool, EraserToolWidget, PanZoomTool, PenTool, PenToolWidget, ToolEnabledGroup, Vec3 } from "js-draw";
 import 'js-draw/styles';
 
 const settings : Partial<EditorSettings> = {
@@ -90,11 +90,18 @@ export class EntityDraw extends HTMLElement {
 		}
 	}
 
-	finish() : Promise<SVGElement> {
+	finish(format : "image/png" | "image/jpeg" | "image/webp" | "image/svg+xml", outputSize? : Vec3) : Promise<SVGElement> | string {
 		this.checkValidation();
-		let svg = this.#editor.toSVGAsync();
+		let out : Promise<SVGElement> | string;
+		switch (format) {
+			case "image/svg+xml":
+				out = this.#editor.toSVGAsync();
+				break;
+			default:
+				out = this.#editor.toDataURL(format);
+		}
 		this.#editor.remove();
-		return svg;
+		return out;
 	}
 };
 
