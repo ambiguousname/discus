@@ -4,13 +4,18 @@ class_name Entity extends Node3D
 @export var is_const : bool = false;
 var is_loading : bool = false;
 signal loading_done();
-## Used by Twine.
-@export var entity_name : String = "Unknown";
+
+## The scene with which to base the entity loading from. Can be "null" if the entity is const.
+@export var scene : PackedScene = null;
 
 ## As a fallback for non-const nodes.
 ## Godot doesn't seem to like setting the value of `owner` in some cases,
 ## so this is a contingency for that case.
 var owner_path : NodePath;
+
+## Helps the [Player] determine what node to look at.
+func to_look_at() -> Node3D:
+	return self;
 
 func _ready() -> void:
 	# Wait until our name is registered:
@@ -51,10 +56,18 @@ func save_state() -> Dictionary:
 		else:
 			property = variant_to_json(property);
 		state_dict[prop_name] = property;
-	state_dict["ClassName"] = self.get_class();
 	if state_dict["owner"] == null:
 		state_dict["owner"] = owner_path;
 	return state_dict;
+
+static func extract_resource_path(prop_value : String) -> Resource:
+	if prop_value.begins_with("resource_path:"):
+		var resource_path = prop_value.substr(14);
+		if not ResourceLoader.exists(resource_path):
+			return null;
+		else:
+			return ResourceLoader.load(resource_path);
+	return null;
 
 func load_state(state_dict : Dictionary, root : Node) -> Error:
 	is_loading = true;
@@ -79,13 +92,12 @@ func load_state(state_dict : Dictionary, root : Node) -> Error:
 	
 	for p in state_dict:
 		var prop_value : Variant = state_dict[p];
-		if prop_value is String:
-			if prop_value.begins_with("resource_path:"):
-				var resource_path = prop_value.substr(14);
-				if not ResourceLoader.exists(resource_path):
-					printerr("Failed to set %s: Resource path %s does not exist" % [p, resource_path]);
-				else:
-					prop_value = ResourceLoader.load(resource_path);
+		if prop_value is String && prop_value.begins_with("resource_path:"):
+			var pth = prop_value;
+			prop_value = extract_resource_path(pth);
+			if prop_value == null:
+				printerr("Failed to set %s: Resource path %s does not exist" % [p, pth]);
+				continue;
 		
 		var prop_type = typeof(self.get(p));
 		match prop_type:

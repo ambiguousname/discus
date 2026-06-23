@@ -92,16 +92,35 @@ func execute_event(event_name : String, event_value: Variant) -> Variant:
 		"load_state":
 			_load_state(event_value);
 		"save_drawing":
-			save_drawing(JSON.parse_string(event_value));
+			return save_drawing(JSON.parse_string(event_value));
+		"create_texture":
+			create_texture(JSON.parse_string(event_value));
+		"download_file":
+			if not FileAccess.file_exists(event_value):
+				printerr("Could not read: ", event_value);
+				return;
+			var file = FileAccess.open(event_value, FileAccess.READ);
+			var buffer = file.get_buffer(file.get_length());
+			file.close();
+			JavaScriptBridge.download_buffer(buffer, event_value.get_file());
+		"list_files":
+			return JSON.stringify(DirAccess.get_files_at(event_value));
 		"create_entity":
 			# Do not return until the entity has been created.
 			await create_entity(JSON.parse_string(event_value));
 		"get_entity":
 			var n = entities.get(event_value);
-			if n == null:
-				return null;
+			var script = n.get_script();
+			var entity_class : Variant = null;
+			if script is Script:
+				entity_class = script.get_global_name();
+			if n is Entity:
+				return JSON.stringify({
+					"id": n.get_instance_id(),
+					"entityClass": entity_class,
+				});
 			else:
-				return n.get_instance_id();
+				return null;
 		"get_entity_prop":
 			return get_entity_prop(JSON.parse_string(event_value));
 		"get_entity_state":
@@ -132,35 +151,67 @@ func get_entity_prop(d : Dictionary):
 		printerr("Error getting prop of %s: propName is not string: " % entity_name, prop_name);
 	return JSON.stringify(Entity.variant_to_json(entities.get(entity_name).get(prop_name)));
 
-func save_drawing(d : Dictionary):
+func save_drawing(d : Dictionary) -> Variant:
 	var mime_type = d.get("type");
 	if mime_type != "image/svg+xml":
 		printerr("Mime type %s not supported." % mime_type);
-		return;
+		return null;
 	var img_name = d.get("name");
 	if !(img_name is String):
 		printerr("Image name should be a string: ", img_name);
-		return; 
+		return null;
 	var svg_str = d.get("img");
 	if svg_str is String:
 		var f = FileAccess.open("user://%s.svg" % img_name, FileAccess.WRITE);
 		f.store_string(svg_str);
 		f.close();
-		return;
+		return img_name;
 	else:
 		printerr("SVG is not a string: ", svg_str);
+		return null;
+
+func create_texture(d : Dictionary):
+	var img_path = d.get("img");
+	if img_path is not String:
+		printerr("Expected image path to be string: ", img_path);
+		return;
+	
+	var mime_type = d.get("type");
+	if mime_type != "image/svg+xml":
+		printerr("Mime type %s not supported." % mime_type);
+		return;
+	
+	var texture_path = d.get("texturePath");
+	if texture_path is String:
+		if not FileAccess.file_exists(img_path):
+			printerr("File %s does not exist." % img_path);
+			return;
+		var svg = FileAccess.get_file_as_bytes(img_path);
+		var img = Image.new();
+		var scale = d.get("scale", 1.0);
+		img.load_svg_from_buffer(svg, scale);
+		
+		var texture = ImageTexture.create_from_image(img);
+		ResourceSaver.save(texture, texture_path);
+	else:
+		printerr("Expected texturePath to be string: ", texture_path);
 
 func create_entity(d : Dictionary):
 	var entity_name = d.get("entityName");
 	if not (entity_name is String):
 		printerr("Entity name is not String for create_entity call:", entity_name, " ", d);
 		return;
-	var texture_path = d.get("texturePath");
-	if not (texture_path is String):
-		printerr("Texture path is not String for %s: " % entity_name, texture_path);
-		return;
-	# Let the entity finish creation:
-	await entity_creator.add_sprite_entity(entity_name, texture_path);
+	var entity_type = d.get("entityType");
+	match entity_type:
+		"character":
+			var texture_path = d.get("texturePath");
+			if not (texture_path is String):
+				printerr("Texture path is not String for %s: " % entity_name, texture_path);
+				return;
+			# Let the entity finish creation:
+			await entity_creator.add_character_entity(entity_name, texture_path);
+		_:
+			printerr("Unrecognized entity type: ", entity_type);
 
 func _send_state_data(state : Dictionary) -> String:
 	var gzip = StreamPeerGZIP.new();
@@ -201,26 +252,18 @@ func _load_state(state_data : String):
 		if entity_name in entities:
 			entities[entity_name].load_state.call_deferred(entity_data, get_tree().root);
 		else:
-			if "ClassName" in entity_data:
-				var class_n : String = entity_data["ClassName"];
-				var obj : Object = ClassDB.instantiate(class_n);
-				entity_data.erase("ClassName");
-				if obj is Node:
-					var script = entity_data.get("script");
-					if script is String:
-						script = script.replace("resource_path:", "");
-						var script_res = load(script);
-						obj.set_script(script_res);
-						entity_data.erase("script");
-						
-						if obj is Entity:
-							obj.is_loading = true;
-							obj.load_state.call_deferred(entity_data, get_tree().root);
-				else:
-					printerr("Entity %s is not a node (is a %s)." %  [entity_name, class_n]);
-					obj.free();
+			var scene = Entity.extract_resource_path(entity_data.get("scene"));
+			if scene is not PackedScene:
+				printerr("Could not find scene to initialize %s: " % entity_name, scene);
+				continue;
+			
+			var obj : Object = scene.instantiate();
+			if obj is Entity:
+				obj.is_loading = true;
+				obj.load_state.call_deferred(entity_data, get_tree().root);
 			else:
-				printerr("Could not find ClassName for save state of entity %s" % entity_name);
+				printerr("Expected scene loaded %s to be an entity (is a %s)" %  [entity_name, obj.get_class()]);
+				obj.free();
 	# Let the entities finish initializing:
 	await get_tree().process_frame;
 	is_loading = false;

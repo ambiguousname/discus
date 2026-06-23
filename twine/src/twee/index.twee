@@ -71,8 +71,7 @@ You move to unlock the door. Not even a second passes before you hear Agamemnon'
 
 :: Anguished Screams
 [JavaScript]
-let ag = new Entity("Agamemnon");
-ag.globalTranslate(new Vector3(0.0, -1.0, 0.0));
+let ag = new Character("Agamemnon");
 ag.globalRotationDeg =  new Vector3(-90, -90, 0);
 
 [cont]
@@ -105,15 +104,19 @@ The substance holding Agamemnon together unravels into a loose collection of str
 
 Draw a Chef.
 
-<form>
-<entity-draw name="chef" required></entity-draw>
+<form id="chef-draw">
+<entity-draw id="chef-drawing" required></entity-draw>
 <submit-passage-link class="link" to="Drawn Chef">"I have finished."</submit-passage-link>
 </form>
 
 :: Drawn Chef
 [JavaScript]
-Interactions.createEntity("Chef", "user://chef.svg").then((chef) => {
-    let ag = new Entity("Agamemnon");
+let chefDraw = getForm("chef-draw");
+chefDraw.get("chef-drawing").then(async (v) => {
+    let img = await Interactions.saveSVG("chef.svg", v);
+    let chef = await Interactions.createCustomCharacter("Chef", "user://chef.svg");
+
+    let ag = new Character("Agamemnon");
     ag.globalPosition.then((gp) => { chef.globalPosition = gp.add(new Vector3(0, 1.0, 0)); ag.queueFree(); });
     chef.globalRotationDeg = new Vector3(0, 90, 0);
     Interactions.cameraFocus(chef, true);
@@ -124,20 +127,39 @@ Ladies, Gentlemen, Astounded Onlookers, Creatures of Other Dispositions, step ri
 
 What will you call them?
 
-<form>
-<input name="Chef" godot-prop-name="entity_name" required/>
+<form id="chef-naming">
+<input id="chef-name" required/>
 <br/>
 <submit-passage-link class="link" to="Named Chef">"Donezo."</submit-passage-link>
 </form>
 
 :: Named Chef
-actorOneIntro: `${capitalize(actorOne.pronouns.subject)} extends a physical formal greeting. "The name is ${actorOne.name}, your new Chef. I look forward to working with you."`
-actorOneIntro (actorOne.personality === "stooge"): `${capitalize(actorOne.pronouns.subject)} slams into the metal of the Discus, letting the hollow <i>CLANG</i> ring out before speaking. "They call me ${actorOne.name}, professional Chef. And you seem pretty cool. I think. Don't rush me, I'm still figuring that out, actually."`
-actorOneIntro (actorOne.personality === "hothead"): `${capitalize(actorOne.pronouns.subject)} throws a loose bit of metal shavings at you. "I'm ${actorOne.name}, your new Chef. Don't get on my bad side."`
-actorOneIntro (actorOne.personality === "goth"): `${capitalize(actorOne.pronouns.subject)} makes grim eye contact (or ${actorOne.pronouns.object} equivalent) with you. "You may refer to me colloquially as ${actorOne.name}. As long as you are not affiliated with any of my many enemies, I shall prove to be an adequate Chef."`
-actorOneIntro (actorOne.personality === "nerd"): `${capitalize(actorOne.pronouns.subject)} regards you with some disdain. "Greetings and salutations. I am ${actorOne.name}, your new Chef, and I think we will get along fine."`
---
 
+[JavaScript]
+let chefNameForm = getForm("chef-naming");
+let name = chefNameForm.get("chef-name");
+let chef = new Character("Chef");
+chef.characterName = name;
+
+let actorOneIntro;
+switch(actorOne.personality) {
+    case "stooge":
+        actorOneIntro = `${capitalize(actorOne.pronouns.subject)} slams into the metal of the Discus, letting the hollow <i>CLANG</i> ring out before speaking. "They call me ${actorOne.name}, professional Chef. And you seem pretty cool. I think. Don't rush me, I'm still figuring that out, actually."`;
+        break;
+    case "hothead":
+        actorOneIntro = `${capitalize(actorOne.pronouns.subject)} throws a loose bit of metal shavings at you. "I'm ${actorOne.name}, your new Chef. Don't get on my bad side."`;
+        break;
+    case "goth":
+        actorOneIntro (actorOne.personality === "goth") = `${capitalize(actorOne.pronouns.subject)} makes grim eye contact (or ${actorOne.pronouns.object} equivalent) with you. "You may refer to me colloquially as ${actorOne.name}. As long as you are not affiliated with any of my many enemies, I shall prove to be an adequate Chef."`;
+        break;
+    case "nerd":
+        actorOneIntro = `${capitalize(actorOne.pronouns.subject)} regards you with some disdain. "Greetings and salutations. I am ${actorOne.name}, your new Chef, and I think we will get along fine."`;
+        break;
+    default:
+        actorOneIntro = `${capitalize(actorOne.pronouns.subject)} extends a physical formal greeting. "The name is ${actorOne.name}, your new Chef. I look forward to working with you."`;
+        break;
+}
+[cont]
 {actorOneIntro}
 
 [["Nice to meet you."]]
