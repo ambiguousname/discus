@@ -1,7 +1,8 @@
 <!-- TODO: Limit actorOne to chef role. -->
+<!-- First draft. Next up: Second Pass, then scripting and assets. -->
 :: Menu_Enter
 
-"What food do we serve here?" {glink: "Menu_Question", label: `${actorOne.name}'s question dislodges your thought from the stomach of indigestible truths.`, lookAt: `e:${actorOne.entity}`}
+"What food do we serve here?" {glink: "Menu_Question", label: `${actorOne.name}'s question dislodges your thought.`, lookAt: `e:${actorOne.entity}`}
 
 :: Menu_Question
 actorOneQ: `"What should I put on the menu? So far I've been serving burned grits."`
@@ -10,8 +11,57 @@ actorOneQ (actorOne.personality === "stooge"): `"A customer asked me if we offer
 actorOneQ (actorOne.personality === "goth"): `"I have found it necessary to draw from casks within my private stores, though it seems more equitable if you were to shoulder the burden of menu planning yourself."`
 actorOneQ (actorOne.personality === "stoic"): `"I've been dusting crumbs and serving them on plates. That doesn't really seem satisfactory."`
 --
-{actorOneQ}
+{actorOne.name} a little further: {actorOneQ} 
 
 [["Do you have any ideas?"->Menu_Idea]]
 [["Give me some crayons, I'll draw the menu."->Menu_Draw]]
-[["Whatever the customer wants."->Menu_Whatever]]
+[["Just do whatever the customer wants."->Menu_Whatever]]
+
+:: Menu_Idea
+actorOneIdea: `"Hear me out: I'm thinking we can have a bunch of staple curries. I just need to buy the right seasonings, and it'll be like an explosion of flavor."`
+actorOneIdea (actorOne.personality === "nerd"): `"Pizza."`
+actorOneIdea (actorOne.personality === "stooge"): `"I've sampled a lot of custards in my life, and let me say, you can't go wrong with custard."`
+actorOneIdea (actorOne.personality === "goth"): `"You can never go wrong with a teahouse. Since we do not appear to have any tea making facilities, I would suggest merely tea sandwiches. Customers can provide their own tea."`
+actorOneIdea (actorOne.personality === "stoic"): `"I am a rice fan. Rice goes well with any meal, so it would be possible to serve a local grain of rice on a plate."`
+--
+{actorOneIdea}
+
+[["Yeah, sounds good."->Menu_Accept]]
+[["I don't know if I like that."->Menu_Unsure]]
+
+:: Menu_Unsure
+"Then we're back at square one."
+
+[["Tell me your idea again?"->Menu_Idea]]
+[["Let me just draw the menu for you."->Menu_Draw]]
+[["The customers can starve for all I care."->Menu_Whatever]]
+
+:: Menu_Accept
+menu_items: "curries"
+menu_items: "pizzas"
+menu_items: "custards"
+--
+{actorOne.name} nods. "Will proceed." {capitalize(actorOne.pronouns.subject)} hangs a menu of select {menu_items} on the wall.
+
+<!-- FINISH -->
+
+:: Menu_Draw
+
+<form id="menu-draw">
+<entity-draw id="menu-drawing" required></entity-draw>
+<submit-passage-link class="link" to="Menu_Drawn">"Try this."</submit-passage-link>
+</form>
+
+:: Menu_Drawn
+menu_items: "unknown"
+--
+"Okay." {actorOne.name} takes the menu and goes to place it on the wall. Turning back to yell at you, {actorOne.pronouns.subject} screams "Not really sure what this says, but I'll just improvise!"
+
+<!-- FINISH -->
+
+:: Menu_Whatever
+menu_items: "whatever"
+--
+"How callous." {actorOne.name} shrugs and slaps an impromptu menu on the wall.
+
+<!-- FINISH -->
